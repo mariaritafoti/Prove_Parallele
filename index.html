@@ -1,405 +1,473 @@
-<!DOCTYPE html>
+
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Analitico Parallele - Rete Statistica</title>
+    <title>IC Radice Alighieri Catona - Rete Statistica Prove Parallele</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js e Plugin Datalabels -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-    
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Favicon Personalizzata -->
-    <link rel="icon" href="catona.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            color: #334155;
-            /* Rimosso background-color solido per mostrare le bolle */
+            font-family: 'Outfit', sans-serif;
+            background-color: #0c102b;
+            color: #f1f5f9;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* --- STILE SFONDO A BOLLE ANIMATE --- */
-        .bubbles-bg {
+        /* Sfondo mesh super colorato e luminoso */
+        .color-mesh-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: -1;
-            background: linear-gradient(135deg, #f0fdf4 0%, #e0e7ff 100%);
-            overflow: hidden;
-        }
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15), inset 0 0 25px rgba(255,255,255,0.8);
-            background-color: rgba(255, 255, 255, 0.3);
-            background-image: url('catona.png');
-            background-size: 65%;
-            background-repeat: no-repeat;
-            background-position: center;
-            /* Nuova animazione caotica */
-            animation: randomFloat linear infinite;
-        }
-        
-        /* Posizioni iniziali e animazioni diversificate per creare caos */
-        .bubble:nth-child(1) { width: 140px; height: 140px; left: -150px; top: 80%; animation-duration: 25s; animation-delay: 0s; }
-        .bubble:nth-child(2) { width: 90px; height: 90px; left: -100px; top: 20%; animation-duration: 35s; animation-delay: -5s; animation-name: randomFloatAlt; }
-        .bubble:nth-child(3) { width: 160px; height: 160px; left: -160px; top: 50%; animation-duration: 30s; animation-delay: -12s; }
-        .bubble:nth-child(4) { width: 70px; height: 70px; left: 110%; top: 10%; animation-duration: 28s; animation-delay: -3s; animation-name: randomFloatReverse; }
-        .bubble:nth-child(5) { width: 190px; height: 190px; left: -200px; top: 60%; animation-duration: 40s; animation-delay: -20s; animation-name: randomFloatAlt2; }
-        .bubble:nth-child(6) { width: 100px; height: 100px; left: 110%; top: 70%; animation-duration: 32s; animation-delay: -8s; animation-name: randomFloatReverseAlt; }
-        .bubble:nth-child(7) { width: 130px; height: 130px; left: -130px; top: 30%; animation-duration: 38s; animation-delay: -15s; }
-        
-        /* Animazioni caotiche e imprevedibili */
-        @keyframes randomFloat {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
-            5% { opacity: 1; }
-            25% { transform: translate(30vw, -20vh) rotate(45deg) scale(1.1); }
-            50% { transform: translate(60vw, 15vh) rotate(90deg) scale(0.9); }
-            75% { transform: translate(90vw, -10vh) rotate(135deg) scale(1.2); }
-            95% { opacity: 1; }
-            100% { transform: translate(120vw, 30vh) rotate(180deg) scale(1); opacity: 0; }
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -3;
+            background: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.35) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.3) 0%, transparent 60%),
+                        #0a0d22;
         }
 
-        @keyframes randomFloatAlt {
-            0% { transform: translate(0, 0) rotate(0deg) scale(0.9); opacity: 0; }
-            5% { opacity: 1; }
-            20% { transform: translate(20vw, 30vh) rotate(-30deg) scale(1.2); }
-            40% { transform: translate(50vw, -15vh) rotate(-70deg) scale(1); }
-            60% { transform: translate(75vw, 25vh) rotate(-110deg) scale(0.8); }
-            80% { transform: translate(95vw, -5vh) rotate(-150deg) scale(1.1); }
-            95% { opacity: 1; }
-            100% { transform: translate(120vw, 10vh) rotate(-180deg) scale(1); opacity: 0; }
+        /* Canvas per le bolle di sapone 3D interattive */
+        #bubbles-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            pointer-events: none;
         }
 
-        @keyframes randomFloatReverse {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1.1); opacity: 0; }
-            5% { opacity: 1; }
-            30% { transform: translate(-35vw, 20vh) rotate(60deg) scale(0.9); }
-            60% { transform: translate(-70vw, -25vh) rotate(120deg) scale(1.2); }
-            90% { transform: translate(-105vw, 15vh) rotate(180deg) scale(1); }
-            95% { opacity: 1; }
-            100% { transform: translate(-120vw, -10vh) rotate(220deg) scale(0.9); opacity: 0; }
+        /* Plance di vetro trasparente per non coprire le bolle */
+        .glass-panel {
+            background: rgba(20, 26, 56, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 15px 45px 0 rgba(139, 92, 246, 0.15);
         }
 
-        @keyframes randomFloatAlt2 {
-             0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
-            5% { opacity: 1; }
-            25% { transform: translate(25vw, -30vh) rotate(90deg) scale(1.15); }
-            50% { transform: translate(55vw, 20vh) rotate(180deg) scale(0.85); }
-            75% { transform: translate(85vw, -20vh) rotate(270deg) scale(1.1); }
-            95% { opacity: 1; }
-            100% { transform: translate(120vw, 0vh) rotate(360deg) scale(1); opacity: 0; }
+        /* Pulsanti neon e animazioni al passaggio */
+        .btn-glow-indigo {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-glow-indigo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.8);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
-        @keyframes randomFloatReverseAlt {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
-            5% { opacity: 1; }
-            25% { transform: translate(-25vw, -15vh) rotate(-60deg) scale(1.1); }
-            50% { transform: translate(-55vw, 35vh) rotate(-120deg) scale(0.9); }
-            75% { transform: translate(-85vw, -5vh) rotate(-180deg) scale(1.15); }
-            95% { opacity: 1; }
-            100% { transform: translate(-120vw, 20vh) rotate(-240deg) scale(1); opacity: 0; }
+        .btn-glow-rose {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-glow-rose:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(244, 63, 94, 0.8);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
-        .card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            padding: 1.5rem;
-            border: 1px solid #e2e8f0;
+        .btn-glow-amber {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .btn-glow-amber:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.8);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
         }
         .tab-content.active {
             display: block;
+            animation: slideUp 0.4s ease-out;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .legend-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-        
-        /* Contenitore in primo piano per stare sopra le bolle */
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
+
+        /* Personalizzazione tabelle */
+        table th {
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="relative min-h-screen pb-12">
 
-    <!-- Container Sfondo a Bolle -->
-    <div class="bubbles-bg">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-    </div>
+    <!-- Sfondi ad alta definizione con colori sgargianti -->
+    <div class="color-mesh-bg"></div>
+    <canvas id="bubbles-canvas"></canvas>
 
-    <div class="max-w-7xl mx-auto content-wrapper">
+    <header class="max-w-7xl mx-auto px-4 pt-4 md:pt-6 mb-8 z-10 relative">
+        <div class="glass-panel p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4 border-l-8 border-l-cyan-400">
+            <div class="flex flex-col text-center md:text-left">
+                <div class="text-[11px] font-bold tracking-widest text-cyan-300 uppercase flex items-center justify-center md:justify-start gap-2">
+                    <i class="fa-solid fa-school"></i> Istituto Comprensivo Radice Alighieri Catona
+                </div>
+                <h1 class="text-xl md:text-2xl font-black text-white mt-1">Rete Statistica Prove Parallele</h1>
+                <p class="text-[12px] md:text-xs text-slate-300 mt-1">
+                    <span class="bg-indigo-500/30 text-indigo-200 px-2 py-0.5 rounded-full font-bold border border-indigo-400/30">
+                        Via Figurella, 27, 89100 Catona RC
+                    </span>
+                    <span class="mx-2 font-bold text-slate-500">|</span>
+                    <span class="text-amber-300 font-semibold">
+                        Funzione Strumentale Area 2: "Interventi e servizi per gli alunni" — Prof.ssa Maria Rita Foti
+                    </span>
+                </p>
+            </div>
+            
+            <!-- Logo a destra leggero e incorniciato -->
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="bg-white/10 p-2 rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
+                    <img src="catona.png" alt="Logo Catona" id="school-logo-img" class="h-12 w-auto object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="hidden h-12 w-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black text-lg">IC</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 z-10 relative">
         
-        <header class="mb-6 bg-white/30 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-white/50 flex flex-col-reverse md:flex-row justify-between items-center md:items-start gap-4 shadow-sm">
-            
-            <!-- Lato Sinistro: Testo e Info -->
-            <div class="text-center md:text-left flex-1 w-full">
-                <!-- Intestazione Scuola -->
-                <h2 class="text-lg md:text-xl font-black text-indigo-950 tracking-tight uppercase mb-0.5 drop-shadow-sm">
-                    I.C. Radice Alighieri Catona
-                </h2>
-                <p class="text-slate-800 font-semibold text-xs md:text-sm mb-3 flex items-center justify-center md:justify-start gap-1.5 drop-shadow-sm">
-                    <i class="fa-solid fa-location-dot text-rose-600"></i> Via Figurella, 27, 89100 Catona (RC)
-                </p>
+        <!-- Navigazione tra il primo quadrimestre (Intermedie) e il secondo (Finali) -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-8">
+            <button onclick="switchPeriod('period-intermedio')" id="btn-period-intermedio" class="btn-glow-indigo px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2">
+                <i class="fa-solid fa-calendar-days"></i> 1° Quadrimestre (Prove Intermedie)
+            </button>
+            <button onclick="switchPeriod('period-finale')" id="btn-period-finale" class="btn-glow-rose px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60">
+                <i class="fa-solid fa-flag-checkered"></i> 2° Quadrimestre (Prove Finali)
+            </button>
+        </div>
 
-                <!-- Titolo Report -->
-                <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight drop-shadow-sm">
-                    <i class="fa-solid fa-chart-pie text-indigo-600 mr-2"></i>Report Analitico Prove Intermedie per Classi Parallele
-                </h1>
-                <p class="text-slate-800 mt-0.5 text-xs md:text-sm font-medium drop-shadow-sm">Confronto Rete Statistica, Dettaglio Classi e Analisi Testuale</p>
-                
-                <!-- Box Evidenziato: Responsabile Funzione Strumentale Area2- "Interventi e Servizi per gli Alunni" -->
-                <div class="mt-4 inline-block bg-white/50 backdrop-blur-lg border border-white/60 px-4 py-2 rounded-xl shadow-sm transition-transform duration-300 hover:scale-105">
-                    <p class="text-[10px] md:text-xs text-indigo-800 font-bold uppercase tracking-widest mb-0.5 flex items-center justify-center md:justify-start drop-shadow-sm">
-                        <i class="fa-solid fa-user-tie mr-1.5"></i> Funzione Strumentale Area2- "Interventi e Servizi per gli Alunni"
+        <!-- ==================== CONTENUTI 1° QUADRIMESTRE (INTERMEDIE) ==================== -->
+        <div id="period-intermedio" class="period-container">
+            
+            <!-- Schede interne di navigazione per le classi del 1° Quadrimestre -->
+            <nav class="flex flex-wrap justify-center gap-2 mb-8 border-b border-white/10 pb-4">
+                <button onclick="openTab('prime-i')" class="tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-indigo-600/30 border border-indigo-400 text-white shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid fa-1 mr-1"></i> Classi Prime
+                </button>
+                <button onclick="openTab('seconde-i')" class="tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10">
+                    <i class="fa-solid fa-2 mr-1"></i> Classi Seconde
+                </button>
+                <button onclick="openTab('terze-i')" class="tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10">
+                    <i class="fa-solid fa-3 mr-1"></i> Classi Terze
+                </button>
+            </nav>
+
+            <!-- CLASSI PRIME - INTERMEDIE -->
+            <div id="prime-i" class="tab-content active">
+                <div class="glass-panel p-6 mb-8 border-t-4 border-t-indigo-400">
+                    <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-indigo-400"></i> Confronto Medie di Disciplina — Classi Prime
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-6 leading-relaxed">
+                        Questo grafico mostra l'andamento delle diverse materie affiancando le sezioni A, B, C e D. È uno strumento fantastico per notare se una classe sta andando molto avanti rispetto ad un'altra in una determinata disciplina, permettendoci di supportare chi ne ha più bisogno.
                     </p>
-                    <p class="text-sm md:text-base font-black text-indigo-950 mt-0 drop-shadow-sm">
-                        PROF.SSA MARIA RITA FOTI
+                    <div class="relative h-[320px] w-full mb-8"><canvas id="canvas-bar-prime-i"></canvas></div>
+                    <div id="rete-prime-i"></div>
+                </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-i-container"></div>
+            </div>
+
+            <!-- CLASSI SECONDE - INTERMEDIE -->
+            <div id="seconde-i" class="tab-content">
+                <div class="glass-panel p-6 mb-8 border-t-4 border-t-indigo-400">
+                    <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-indigo-400"></i> Confronto Medie di Disciplina — Classi Seconde
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-6 leading-relaxed">
+                        Attraverso questo grafico a barre studiamo i dati delle classi seconde. Ci aiuta a osservare se il piano di studi procede in modo omogeneo tra le sezioni o se è opportuno fare degli aggiustamenti metodologici prima del termine del quadrimestre.
                     </p>
+                    <div class="relative h-[320px] w-full mb-8"><canvas id="canvas-bar-seconde-i"></canvas></div>
+                    <div id="rete-seconde-i"></div>
                 </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-i-container"></div>
             </div>
 
-            <!-- Lato Destro: Logo -->
-            <div class="shrink-0 flex items-center justify-center md:justify-end mb-2 md:mb-0">
-                <img src="catona.png" alt="Logo IC Radice Alighieri Catona" class="h-20 md:h-28 w-auto object-contain drop-shadow-md rounded-lg" onerror="this.onerror=null; this.src='https://placehold.co/120x120/ffffff/475569?text=Logo';">
-            </div>
-
-        </header>
-
-        <!-- Menu di Navigazione a Schede (Tabs) -->
-        <nav class="flex flex-wrap gap-2 mb-8 border-b border-slate-200 pb-4">
-            <button onclick="openTab('tab-panoramica')" id="btn-panoramica" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-md">
-                <i class="fa-solid fa-globe mr-2"></i> Panoramica Globale
-            </button>
-            <button onclick="openTab('tab-prime')" id="btn-prime" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
-                <i class="fa-solid fa-1 mr-2"></i> Classi Prime
-            </button>
-            <button onclick="openTab('tab-seconde')" id="btn-seconde" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
-                <i class="fa-solid fa-2 mr-2"></i> Classi Seconde
-            </button>
-            <button onclick="openTab('tab-terze')" id="btn-terze" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
-                <i class="fa-solid fa-3 mr-2"></i> Classi Terze
-            </button>
-        </nav>
-
-        <!-- ==================== TAB 1: PANORAMICA GLOBALE ==================== -->
-        <div id="tab-panoramica" class="tab-content active">
-            <div class="card bg-gradient-to-br from-white to-slate-50 border-t-4 border-t-amber-400">
-                <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
-                    <i class="fa-solid fa-trophy text-amber-500 mr-3"></i> Analisi Globale d'Istituto (Tutte le Classi)
-                </h2>
-                
-                <div class="flex flex-col md:flex-row items-stretch gap-8">
-                    <div class="w-full md:w-5/12 flex flex-col justify-center">
-                        <div class="relative h-80">
-                            <canvas id="chartEccellenze"></canvas>
-                        </div>
-                        <div class="mt-4 flex justify-center gap-4 text-sm font-medium">
-                            <span class="flex items-center"><span class="legend-dot bg-emerald-500"></span>Eccellenze (≥8)</span>
-                            <span class="flex items-center"><span class="legend-dot bg-blue-500"></span>Intermedi (6-7.9)</span>
-                            <span class="flex items-center"><span class="legend-dot bg-rose-500"></span>Critici (<6)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="w-full md:w-7/12 bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center">
-                        <h3 class="text-xl font-extrabold text-slate-800 mb-4 border-b pb-2">Diagnostica Generale</h3>
-                        <div id="testo-globale" class="text-slate-600 leading-relaxed space-y-4">
-                            <!-- Generato via JS -->
-                        </div>
-                    </div>
+            <!-- CLASSI TERZE - INTERMEDIE -->
+            <div id="terze-i" class="tab-content">
+                <div class="glass-panel p-6 mb-8 border-t-4 border-t-indigo-400">
+                    <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-indigo-400"></i> Confronto Medie di Disciplina — Classi Terze
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-6 leading-relaxed">
+                        Le classi terze sono nel quadrimestre decisivo per la scelta scolastica. Questo confronto mostra lo stato di preparazione in vista degli esami di fine anno per calibrare al meglio i consigli orientativi.
+                    </p>
+                    <div class="relative h-[320px] w-full mb-8"><canvas id="canvas-bar-terze-i"></canvas></div>
+                    <div id="rete-terze-i"></div>
                 </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-terze-i-container"></div>
             </div>
+
         </div>
 
-        <!-- ==================== TAB 2: CLASSI PRIME ==================== -->
-        <div id="tab-prime" class="tab-content">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
-                    <span class="bg-indigo-100 text-indigo-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">1</span>
-                    Report Classi Prime
-                </h2>
-                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4 hidden sm:flex">
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
-                </div>
-            </div>
+        <!-- ==================== CONTENUTI 2° QUADRIMESTRE (FINALI) ==================== -->
+        <div id="period-finale" class="period-container hidden">
             
-            <div class="card mb-8 border-t-4 border-t-indigo-400">
-                <h3 class="text-xl font-bold mb-2 text-center text-slate-800"><i class="fa-solid fa-chart-column mr-2 text-indigo-500"></i>Confronto tra le varie sezioni (Grafico a Colonne)</h3>
-                <p class="text-center text-slate-700 mb-6 max-w-4xl mx-auto text-sm leading-relaxed bg-indigo-50 p-4 rounded-lg border border-indigo-100 shadow-sm">
-                    Questo grafico ci offre una visione d'insieme di tutte le sezioni prime affiancate. Ci permette di individuare se una difficoltà è isolata in una sola sezione o se è un ostacolo condiviso da tutte le classi, potendo così decidere se intervenire con un recupero mirato o riprogettare la didattica per tutto l'anno.
-                </p>
-                <div class="relative h-[300px] w-full mb-8"><canvas id="barPrime"></canvas></div>
-                
-                <!-- CONTAINER RETE STATISTICA PRIME -->
-                <div id="rete-prime"></div>
-            </div>
+            <!-- Schede interne di navigazione per le classi del 2° Quadrimestre -->
+            <nav class="flex flex-wrap justify-center gap-2 mb-8 border-b border-white/10 pb-4">
+                <button onclick="openTabF('prime-f')" class="tab-btn-f px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-rose-600/30 border border-rose-400 text-white shadow-lg shadow-rose-500/20">
+                    <i class="fa-solid fa-1 mr-1"></i> Classi Prime
+                </button>
+                <button onclick="openTabF('seconde-f')" class="tab-btn-f px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10">
+                    <i class="fa-solid fa-2 mr-1"></i> Classi Seconde
+                </button>
+            </nav>
 
-            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Singola Sezione</h3>
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-container"></div>
-        </div>
-
-        <!-- ==================== TAB 3: CLASSI SECONDE ==================== -->
-        <div id="tab-seconde" class="tab-content">
-             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
-                    <span class="bg-emerald-100 text-emerald-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">2</span>
-                    Report Classi Seconde
-                </h2>
-                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4 hidden sm:flex">
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
+            <!-- CLASSI PRIME - FINALI -->
+            <div id="prime-f" class="tab-content active">
+                <div class="glass-panel p-6 mb-8 border-t-4 border-t-rose-400">
+                    <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-rose-400"></i> Confronto Medie di Disciplina — Classi Prime
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-6 leading-relaxed">
+                        Questo grafico raccoglie i risultati finali del secondo quadrimestre per le classi prime. Possiamo vedere chiaramente i notevoli passi in avanti fatti da settembre ad oggi in tutte le discipline.
+                    </p>
+                    <div class="relative h-[320px] w-full mb-8"><canvas id="canvas-bar-prime-f"></canvas></div>
+                    <div id="rete-prime-f"></div>
                 </div>
-            </div>
-            
-            <div class="card mb-8 border-t-4 border-t-emerald-400">
-                <h3 class="text-xl font-bold mb-2 text-center text-slate-800"><i class="fa-solid fa-chart-column mr-2 text-emerald-500"></i>Confronto tra le varie sezioni (Grafico a Colonne)</h3>
-                <p class="text-center text-slate-700 mb-6 max-w-4xl mx-auto text-sm leading-relaxed bg-emerald-50 p-4 rounded-lg border border-emerald-100 shadow-sm">
-                    Attraverso questo grafico osserviamo il comportamento delle classi seconde a confronto. Se una sezione spicca particolarmente in una materia, potremmo condividere tra noi docenti il metodo utilizzato; se invece notiamo cali diffusi, sappiamo dove concentrare le energie nel prossimo quadrimestre.
-                </p>
-                <div class="relative h-[300px] w-full mb-8"><canvas id="barSeconde"></canvas></div>
-
-                <!-- CONTAINER RETE STATISTICA SECONDE -->
-                <div id="rete-seconde"></div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-f-container"></div>
             </div>
 
-            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Singola Sezione</h3>
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-container"></div>
-        </div>
-
-        <!-- ==================== TAB 4: CLASSI TERZE ==================== -->
-        <div id="tab-terze" class="tab-content">
-             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
-                    <span class="bg-rose-100 text-rose-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">3</span>
-                    Report Classi Terze
-                </h2>
-                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4 hidden sm:flex">
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
-                    <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
+            <!-- CLASSI SECONDE - FINALI -->
+            <div id="seconde-f" class="tab-content">
+                <div class="glass-panel p-6 mb-8 border-t-4 border-t-rose-400">
+                    <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-rose-400"></i> Confronto Medie di Disciplina — Classi Seconde
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-6 leading-relaxed">
+                        Qui analizziamo le valutazioni di fine secondo quadrimestre delle seconde. I dati ci restituiscono la fotografia del consolidamento didattico generale.
+                    </p>
+                    <div class="relative h-[320px] w-full mb-8"><canvas id="canvas-bar-seconde-f"></canvas></div>
+                    <div id="rete-seconde-f"></div>
                 </div>
-            </div>
-            
-            <div class="card mb-8 border-t-4 border-t-rose-400">
-                <h3 class="text-xl font-bold mb-2 text-center text-slate-800"><i class="fa-solid fa-chart-column mr-2 text-rose-500"></i>Confronto tra le varie sezioni (Grafico a Colonne)</h3>
-                <p class="text-center text-slate-700 mb-6 max-w-4xl mx-auto text-sm leading-relaxed bg-rose-50 p-4 rounded-lg border border-rose-100 shadow-sm">
-                    Il grafico ci permette di valutare la solidità della preparazione in vista dell'esame. Confrontando le sezioni orizzontalmente, capiamo subito se ci sono dislivelli o se stiamo procedendo in modo omogeneo verso il traguardo finale.
-                </p>
-                <div class="relative h-[300px] w-full mb-8"><canvas id="barTerze"></canvas></div>
-
-                <!-- CONTAINER RETE STATISTICA TERZE -->
-                <div id="rete-terze"></div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-f-container"></div>
             </div>
 
-            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Singola Sezione</h3>
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-terze-container"></div>
         </div>
 
-    </div>
+    </main>
 
     <script>
-        // Registrazione plugin percentuale torte
-        Chart.register(ChartDataLabels);
+        // --- CONFIGURAZIONE CANVASES E ANIMAZIONE BOLLE DI SAPONE ---
+        const canvas = document.getElementById('bubbles-canvas');
+        const ctx = canvas.getContext('2d');
+        const schoolLogo = new Image();
+        schoolLogo.src = 'catona.png';
 
-        // --- GESTIONE TABS (PAGINE) ---
-        function openTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
-            });
-            
-            document.getElementById(tabId).classList.add('active');
-            let activeBtnId = tabId.replace('tab-', 'btn-');
-            let btn = document.getElementById(activeBtnId);
-            
-            if(tabId === 'tab-panoramica') {
-                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-md";
-            } else if(tabId === 'tab-prime') {
-                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-md";
-            } else if(tabId === 'tab-seconde') {
-                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-emerald-600 text-white shadow-md";
-            } else if(tabId === 'tab-terze') {
-                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-rose-600 text-white shadow-md";
+        let bubbles = [];
+        const numBubbles = 16; // Numero di bolle fluttuanti
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class SoapBubble {
+            constructor() {
+                // Le bolle nascono già sparse ovunque nello schermo!
+                this.radius = Math.random() * 45 + 50; // Dimensione generosa
+                this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+                this.y = Math.random() * (canvas.height - this.radius * 2) + this.radius;
+                
+                // Direzioni e velocità completamente casuali avanti e indietro
+                this.vx = (Math.random() - 0.5) * 1.6;
+                this.vy = (Math.random() - 0.5) * 1.6;
+                
+                this.hue = Math.random() * 360; // Tinta iridescente principale
+                this.wobbleSpeed = Math.random() * 0.04 + 0.02;
+                this.wobbleAmount = Math.random() * 3 + 2;
+                this.wobbleAngle = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.wobbleAngle += this.wobbleSpeed;
+
+                // Rimbalzo avanti e indietro sui bordi dello schermo
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+                    this.vx = -this.vx;
+                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                }
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+                    this.vy = -this.vy;
+                    this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+                }
+            }
+
+            draw() {
+                ctx.save();
+                
+                // Leggera distorsione elastica (wobble) per rendere la bolla realistica
+                let wRadiusX = this.radius + Math.sin(this.wobbleAngle) * this.wobbleAmount;
+                let wRadiusY = this.radius + Math.cos(this.wobbleAngle) * this.wobbleAmount;
+
+                // 1. Sfumatura iridescente della bolla di sapone
+                let grad = ctx.createRadialGradient(
+                    this.x - wRadiusX * 0.3, this.y - wRadiusY * 0.3, wRadiusX * 0.1,
+                    this.x, this.y, wRadiusX
+                );
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+                grad.addColorStop(0.3, `hsla(${this.hue}, 85%, 70%, 0.25)`);
+                grad.addColorStop(0.6, `hsla(${(this.hue + 120) % 360}, 85%, 70%, 0.1)`);
+                grad.addColorStop(0.9, `hsla(${(this.hue + 240) % 360}, 85%, 70%, 0.35)`);
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0.02)');
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.ellipse(this.x, this.y, wRadiusX, wRadiusY, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 2. Tratto del bordo iridescente e colorato
+                let strokeGrad = ctx.createLinearGradient(
+                    this.x - wRadiusX, this.y - wRadiusY,
+                    this.x + wRadiusX, this.y + wRadiusY
+                );
+                strokeGrad.addColorStop(0, `hsla(${this.hue}, 95%, 65%, 0.85)`);
+                strokeGrad.addColorStop(0.5, `hsla(${(this.hue + 150) % 360}, 95%, 65%, 0.4)`);
+                strokeGrad.addColorStop(1, `hsla(${(this.hue + 300) % 360}, 95%, 65%, 0.9)`);
+                
+                ctx.strokeStyle = strokeGrad;
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // 3. Punto di luce bianca (riflesso)
+                ctx.beginPath();
+                ctx.ellipse(this.x - wRadiusX * 0.4, this.y - wRadiusY * 0.4, wRadiusX * 0.2, wRadiusY * 0.08, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+                ctx.fill();
+
+                // 4. Ritaglio del logo scolastico interno alla bolla
+                let imgSize = this.radius * 0.88;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, imgSize / 2, 0, Math.PI * 2);
+                ctx.clip();
+
+                if (schoolLogo.complete && schoolLogo.naturalWidth !== 0) {
+                    ctx.drawImage(schoolLogo, this.x - imgSize / 2, this.y - imgSize / 2, imgSize, imgSize);
+                } else {
+                    // Testo di riserva in mancanza dell'immagine
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = `bold ${this.radius * 0.38}px Outfit`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText("IC", this.x, this.y);
+                }
+                ctx.restore();
+
+                // 5. Cornice circolare colorata attorno al logo
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, imgSize / 2, 0, Math.PI * 2);
+                ctx.strokeStyle = `hsla(${(this.hue + 180) % 360}, 95%, 65%, 0.75)`;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.restore();
             }
         }
 
-        // --- DATI REALI (Inclusa la III E per le terze) ---
-        const dataPrime = {
-            labels: ['I A', 'I B', 'I C', 'I D'],
-            italiano: [7.0, 7.0, 7.0, 7.7],
-            matematica: [7.1, 7.0, 5.0, 7.72],
-            inglese: [7.0, 7.11, 7.0, 8.27]
+        // Inizializza l'array di bolle già sparse per lo schermo
+        for (let i = 0; i < numBubbles; i++) {
+            bubbles.push(new SoapBubble());
+        }
+
+        function animateBubbles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            bubbles.forEach(bubble => {
+                bubble.update();
+                bubble.draw();
+            });
+            requestAnimationFrame(animateBubbles);
+        }
+        animateBubbles();
+    </script>
+
+    <script>
+        // --- CONFIGURAZIONE DATI E STRUTTURE STATISTICHE ---
+        
+        // 1. Dati Prove Parallele Intermedie (1° Quadrimestre 25-26)
+        const rawIntermedie = {
+            prime: {
+                labels: ['I A', 'I B', 'I C', 'I D'],
+                italiano: [7.0, 7.0, 7.0, 7.7],
+                matematica: [7.1, 7.0, 5.0, 7.72],
+                inglese: [7.0, 7.11, 7.0, 8.27]
+            },
+            seconde: {
+                labels: ['II A', 'II B', 'II C', 'II D'],
+                italiano: [6.4, 7.0, 6.3, 6.0],
+                matematica: [8.0, 8.0, 5.0, 7.71],
+                inglese: [7.0, 8.43, 7.0, 9.39]
+            },
+            terze: {
+                labels: ['III A', 'III B', 'III C', 'III D', 'III E'],
+                italiano: [8.6, 5.75, 7.5, 7.0, 7.0],
+                matematica: [7.5, 6.0, 7.0, 8.18, 8.5],
+                inglese: [8.7, 7.0, 7.0, 7.0, 7.38]
+            }
         };
 
-        const dataSeconde = {
-            labels: ['II A', 'II B', 'II C', 'II D'],
-            italiano: [6.4, 7.0, 6.3, 6.0],
-            matematica: [8.0, 8.0, 5.0, 7.71],
-            inglese: [7.0, 8.43, 7.0, 9.39]
+        // 2. Dati Prove Parallele Finali (2° Quadrimestre 25-26)
+        const rawFinali = {
+            prime: {
+                labels: ['I A', 'I B', 'I C', 'I D'],
+                italiano: [7.0, 8.0, 6.0, 7.0],
+                matematica: [7.6, 9.0, 8.0, 9.38],
+                inglese: [7.0, 8.46, 7.0, 9.36]
+            },
+            seconde: {
+                labels: ['II A', 'II B', 'II C', 'II D'],
+                italiano: [6.3, 7.0, 7.0, 6.0],
+                matematica: [7.2, 8.0, 8.0, 9.0],
+                inglese: [8.0, 8.0, 8.0, 9.44]
+            }
         };
 
-        const dataTerze = {
-            labels: ['III A', 'III B', 'III C', 'III D', 'III E'],
-            italiano: [8.6, 5.75, 7.5, 7.0, 7.0],
-            matematica: [7.5, 6.0, 7.0, 8.18, 8.5],
-            inglese: [8.7, 7.0, 7.0, 7.0, 7.38]
+        // Paletta di colori per i grafici
+        const subjectColors = {
+            italiano: { bg: 'rgba(236, 72, 153, 0.85)', border: '#db2777' },   // Fucsia vibrante
+            matematica: { bg: 'rgba(6, 182, 212, 0.85)', border: '#0891b2' }, // Cyan
+            inglese: { bg: 'rgba(139, 92, 246, 0.85)', border: '#7c3aed' }    // Violetto
         };
 
-        const colors = {
-            italiano: { bg: 'rgba(219, 39, 119, 0.85)', border: '#9d174d' }, 
-            matematica: { bg: 'rgba(8, 145, 178, 0.85)', border: '#155e75' }, 
-            inglese: { bg: 'rgba(124, 58, 237, 0.85)', border: '#5b21b6' },   
-            eccellenze: 'rgba(16, 185, 129, 0.85)', 
-            intermedi: 'rgba(59, 130, 246, 0.85)',  
-            criticita: 'rgba(244, 63, 94, 0.85)'    
-        };
+        // Configurazione globale ChartDataLabels
+        Chart.register(ChartDataLabels);
+        Chart.defaults.color = 'rgba(255, 255, 255, 0.8)';
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+        Chart.defaults.animation = false; // Disabilita animazioni per evitare sfarfallii su ridimensionamento
+
+        // Array per tracciare le istanze dei grafici e distruggerli se necessario
+        let activeCharts = [];
 
         // --- NUOVA FUNZIONE: Generatore Rete Statistica Disciplinare (Confronto Orizzontale) ---
-        function generaReteStatistica(dataObj) {
-            function analizzaMateria(nomeMateria, arrayVoti, classi, coloreTesto, icona) {
+        function elaboraReteStatistica(dataObj) {
+            function analizzaMateria(nomeMateria, arrayVoti, classi, coloreTesto, icona, media) {
                 let maxVoto = Math.max(...arrayVoti);
                 let minVoto = Math.min(...arrayVoti);
-                let media = (arrayVoti.reduce((a,b)=>a+b,0) / arrayVoti.length).toFixed(2);
                 
-                // Gestione multipla per parimerito
                 let maxArr = classi.filter((c, i) => arrayVoti[i] === maxVoto);
                 let minArr = classi.filter((c, i) => arrayVoti[i] === minVoto);
                 
@@ -407,47 +475,56 @@
                 let minSogg = minArr.length > 1 ? `le sezioni <strong>${minArr.join(" e ")}</strong>` : `la sezione <strong>${minArr[0]}</strong>`;
                 let scarto = (maxVoto - minVoto).toFixed(2);
                 
-                let testo = `<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4">
-                    <h4 class="font-bold ${coloreTesto} text-lg mb-2 flex items-center"><i class="fa-solid ${icona} mr-2"></i> Il confronto orizzontale in ${nomeMateria}</h4>
-                    <p class="text-slate-700 text-[0.95rem] leading-relaxed">`;
-                    
-                testo += `Mettendo tutte le sezioni sulla stessa linea, la media in ${nomeMateria} è di <strong>${media}</strong>. `;
+                let testo = `
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-4">
+                        <h4 class="font-bold ${coloreTesto} text-base mb-2 flex items-center gap-2">
+                            <i class="fa-solid ${icona}"></i> Il confronto orizzontale in ${nomeMateria}
+                        </h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Mettendo tutte le sezioni a confronto, la media in ${nomeMateria} è di <strong>${media}</strong>. 
+                `;
                 
                 if (scarto == 0) {
-                    testo += `È un risultato bellissimo: c'è un allineamento perfetto tra tutte le classi, che viaggiano esattamente sul <strong>${maxVoto}</strong>. Significa che il programma viene recepito in modo identico da tutti i gruppi.`;
+                    testo += `C'è un allineamento perfetto tra tutte le classi, che viaggiano esattamente sul voto di <strong>${maxVoto}</strong>. Significa che il programma viene recepito in modo identico da tutti i gruppi.`;
                 } else if (scarto <= 0.6) {
-                    testo += `Notiamo una bellissima compattezza tra i vari gruppi. A fare un po' da traino è ${maxSogg} (con <strong>${maxVoto}</strong>), ma anche chi ha registrato il valore "minore", ovvero ${minSogg} (con <strong>${minVoto}</strong>), è rimasto saldamente agganciato al gruppo. La rete didattica tiene benissimo.`;
+                    testo += `Notiamo una bellissima compattezza tra i vari gruppi. A fare da traino è ${maxSogg} (con <strong>${maxVoto}</strong>), ma anche chi ha registrato il valore minore, ossia ${minSogg} (con <strong>${minVoto}</strong>), è rimasto saldamente agganciato al gruppo. La rete tiene benissimo.`;
                 } else if (scarto >= 1.5) {
-                    testo += `Qui invece la "rete" si allarga parecchio e si nota una forte disomogeneità (c'è una differenza sostanziale di ${scarto} punti). Abbiamo una punta di diamante eccezionale: ${maxSogg} tocca il <strong>${maxVoto}</strong>. Di contro, dobbiamo subito riunirci e capire come supportare ${minSogg}, che ha registrato un <strong>${minVoto}</strong> e rischia di staccarsi dal resto del plesso.`;
+                    testo += `Qui invece la rete si allarga e si nota una certa disomogeneità (differenza di ${scarto} punti). Abbiamo un punto di forza eccezionale in ${maxSogg} che tocca il <strong>${maxVoto}</strong>, mentre è opportuno dare un supporto mirato a ${minSogg} che si attesta su <strong>${minVoto}</strong>.`;
                 } else {
-                    testo += `Le sezioni stanno procedendo in modo regolare, anche se a ritmi leggermente diversi. ${maxSogg} è quella che ha risposto meglio, arrivando a <strong>${maxVoto}</strong>. Un pochino più staccata c'è ${minSogg} con <strong>${minVoto}</strong>, ma non c'è nulla di allarmante: è un divario che potremo colmare comodamente nel secondo quadrimestre.`;
+                    testo += `Le sezioni stanno procedendo in modo regolare. ${maxSogg} ha risposto meglio, arrivando a <strong>${maxVoto}</strong>, mentre ${minSogg} si stacca leggermente con <strong>${minVoto}</strong>, un divario ampiamente colmabile con le normali attività didattiche.`;
                 }
                 
                 testo += `</p></div>`;
                 return testo;
             }
             
-            let html = `<div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-                <h3 class="font-extrabold text-slate-800 text-lg mb-4 uppercase tracking-wide flex items-center">
-                    <i class="fa-solid fa-network-wired text-slate-500 mr-2"></i> Rete Statistica Disciplinare
-                </h3>
-                <p class="text-sm text-slate-500 mb-4 italic">Confronto classe per classe all'interno delle singole materie.</p>`;
+            let html = `
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10 mt-6">
+                    <h3 class="font-extrabold text-white text-base mb-4 uppercase tracking-wide flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-cyan-400"></i> Rete Statistica Disciplinare
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-4 italic">Confronto classe per classe all'interno delle singole materie.</p>
+            `;
             
-            html += analizzaMateria('Italiano', dataObj.italiano, dataObj.labels, 'text-pink-700', 'fa-book');
-            html += analizzaMateria('Matematica', dataObj.matematica, dataObj.labels, 'text-cyan-700', 'fa-square-root-variable');
-            html += analizzaMateria('Inglese', dataObj.inglese, dataObj.labels, 'text-violet-700', 'fa-language');
+            let avgIta = (dataObj.italiano.reduce((a,b)=>a+b,0) / dataObj.italiano.length).toFixed(2);
+            let avgMat = (dataObj.matematica.reduce((a,b)=>a+b,0) / dataObj.matematica.length).toFixed(2);
+            let avgIng = (dataObj.inglese.reduce((a,b)=>a+b,0) / dataObj.inglese.length).toFixed(2);
+
+            html += analizzaMateria('Italiano', dataObj.italiano, dataObj.labels, 'text-pink-300', 'fa-book', avgIta);
+            html += analizzaMateria('Matematica', dataObj.matematica, dataObj.labels, 'text-cyan-300', 'fa-square-root-variable', avgMat);
+            html += analizzaMateria('Inglese', dataObj.inglese, dataObj.labels, 'text-violet-300', 'fa-language', avgIng);
             
             html += `</div>`;
             return html;
         }
 
-        // --- FUNZIONE: Generatore di Testi Singola Classe ---
-        function generaTestoClasse(classe, ita, mat, ing) {
+        // --- NUOVA FUNZIONE: Generatore di Testi Singola Classe ---
+        function generaDiscorsoProf(classe, ita, mat, ing) {
             const mediaGenerale = ((ita + mat + ing) / 3).toFixed(2);
             const materie = [
-                { nome: 'Italiano', voto: ita, colore: 'text-pink-700', bgIcona: 'bg-pink-100', textIcona: 'text-pink-600' },
-                { nome: 'Matematica', voto: mat, colore: 'text-cyan-700', bgIcona: 'bg-cyan-100', textIcona: 'text-cyan-600' },
-                { nome: 'Inglese', voto: ing, colore: 'text-violet-700', bgIcona: 'bg-violet-100', textIcona: 'text-violet-600' }
+                { nome: 'Italiano', voto: ita, colore: 'text-pink-300', bgIcona: 'bg-pink-500/10', textIcona: 'text-pink-400' },
+                { nome: 'Matematica', voto: mat, colore: 'text-cyan-300', bgIcona: 'bg-cyan-500/10', textIcona: 'text-cyan-400' },
+                { nome: 'Inglese', voto: ing, colore: 'text-violet-300', bgIcona: 'bg-violet-500/10', textIcona: 'text-violet-400' }
             ];
             materie.sort((a, b) => b.voto - a.voto); 
             
@@ -456,235 +533,312 @@
             const intermedia = materie[1];
             const scarto = (migliore.voto - peggiore.voto).toFixed(2);
 
-            let testo = `<div class="text-[0.95rem] text-slate-700 leading-relaxed h-full flex flex-col gap-3">`;
+            let testo = `<div class="text-[13px] text-slate-300 leading-relaxed h-full flex flex-col gap-3">`;
             
-            testo += `<div class="bg-slate-50 p-3 rounded-lg border border-slate-100">`;
-            testo += `<h4 class="font-bold text-slate-800 mb-1 border-b border-slate-200 pb-1">Il Quadro Generale</h4>`;
+            testo += `<div class="bg-white/5 p-3 rounded-lg border border-white/5">`;
+            testo += `<h5 class="font-bold text-white mb-1 border-b border-white/10 pb-1 text-xs uppercase tracking-wider">Il Quadro Generale</h5>`;
             if (mediaGenerale >= 8) {
-                testo += `<p>I ragazzi della <strong>${classe}</strong> stanno facendo un lavoro eccezionale. Hanno raggiunto una bellissima media generale di <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span>. La classe è attenta, partecipa volentieri e i risultati si vedono chiaramente.</p>`;
+                testo += `<p>I ragazzi della <strong>${classe}</strong> stanno facendo un lavoro eccezionale. Hanno raggiunto una bellissima media generale di <span class="bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">${mediaGenerale}</span>. La classe è attenta, partecipa volentieri e i risultati si vedono chiaramente.</p>`;
             } else if (mediaGenerale >= 6.5) {
-                testo += `<p>La <strong>${classe}</strong> è una classe solida, che lavora con impegno e costanza. La media generale di <span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span> ci dice che i ragazzi hanno basi sicure e seguono bene le lezioni.</p>`;
+                testo += `<p>La <strong>${classe}</strong> è una classe solida, che lavora con impegno e costanza. La media generale di <span class="bg-blue-500/20 text-blue-300 font-bold px-2 py-0.5 rounded border border-blue-500/30">${mediaGenerale}</span> ci dice che i ragazzi hanno basi sicure e seguono bene le lezioni.</p>`;
             } else if (mediaGenerale >= 6) {
-                testo += `<p>La <strong>${classe}</strong> riesce a raggiungere la sufficienza con una media di <span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span>. È un risultato positivo, ma che ci fa capire che molti ragazzi stanno faticando per restare a galla e hanno bisogno di essere guidati di più.</p>`;
+                testo += `<p>La <strong>${classe}</strong> riesce a raggiungere la sufficienza con una media di <span class="bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">${mediaGenerale}</span>. È un risultato positivo, ma che ci fa capire che molti ragazzi stanno faticando per restare a galla e hanno bisogno di essere guidati di più.</p>`;
             } else {
-                testo += `<p>La situazione della <strong>${classe}</strong> richiede la nostra massima attenzione. La media di <span class="bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span> indica che la classe è in forte difficoltà e molti alunni si sentono disorientati.</p>`;
+                testo += `<p>La situazione della <strong>${classe}</strong> richiede la nostra massima attenzione. La media di <span class="bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded border border-rose-500/30">${mediaGenerale}</span> indica che la classe è in forte difficoltà e molti alunni si sentono disorientati.</p>`;
             }
             
             if (scarto <= 0.6) {
-                testo += `<p class="mt-2 text-sm">Guardando il grafico a torta, notiamo un andamento <strong>molto equilibrato</strong>: l'impegno è ben distribuito tra le varie materie senza grandi sbalzi.</p>`;
+                testo += `<p class="mt-2 text-xs">Guardando il grafico a torta, notiamo un andamento <strong>molto equilibrato</strong>: l'impegno è ben distribuito tra le varie materie senza grandi sbalzi.</p>`;
             } else if (scarto >= 1.5) {
-                testo += `<p class="mt-2 text-sm">Notiamo però un <strong>forte squilibrio</strong> (differenza di ben ${scarto} punti tra la migliore e la peggiore). I ragazzi si applicano molto in alcuni ambiti, ma tendono a trascurarne altri.</p>`;
+                testo += `<p class="mt-2 text-xs text-amber-300">Notiamo però un <strong>forte squilibrio</strong> (differenza di ben ${scarto} punti tra la migliore e la peggiore). I ragazzi si applicano molto in alcuni ambiti, ma tendono a trascurarne altri.</p>`;
             }
             testo += `</div>`;
 
             testo += `<div>`;
-            testo += `<h4 class="font-bold text-slate-800 mb-2">Il dettaglio delle materie</h4>`;
-            testo += `<ul class="space-y-3">`;
+            testo += `<h5 class="font-bold text-white mb-2 text-xs uppercase tracking-wider">Il dettaglio delle materie</h5>`;
+            testo += `<ul class="space-y-2">`;
             
-            testo += `<li class="flex items-start bg-white p-2 rounded border border-slate-100 shadow-sm">
-                        <span class="${migliore.bgIcona} ${migliore.textIcona} w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-star"></i></span>
-                        <div><strong class="${migliore.colore}">Il punto di forza è ${migliore.nome}:</strong> la classe brilla con una media del <strong>${migliore.voto}</strong>. Il metodo funziona e i ragazzi si sentono sicuri.</div>
+            testo += `<li class="flex items-start bg-white/5 p-2 rounded border border-white/5">
+                        <span class="${migliore.bgIcona} ${migliore.textIcona} w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-star text-xs"></i></span>
+                        <div class="text-xs"><strong class="${migliore.colore}">Il punto di forza è ${migliore.nome}:</strong> la classe brilla con una media di <strong>${migliore.voto}</strong>.</div>
                       </li>`;
 
-            testo += `<li class="flex items-start bg-white p-2 rounded border border-slate-100 shadow-sm">
-                        <span class="${intermedia.bgIcona} ${intermedia.textIcona} w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-check"></i></span>
-                        <div class="text-slate-600 text-sm mt-1">Ottima tenuta anche in <strong>${intermedia.nome}</strong>, dove i ragazzi si attestano su un buon <strong>${intermedia.voto}</strong>.</div>
+            testo += `<li class="flex items-start bg-white/5 p-2 rounded border border-white/5">
+                        <span class="${intermedia.bgIcona} ${intermedia.textIcona} w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-check text-xs"></i></span>
+                        <div class="text-slate-300 text-xs mt-0.5">Ottima tenuta anche in <strong>${intermedia.nome}</strong> con un buon <strong>${intermedia.voto}</strong>.</div>
                       </li>`;
 
-            testo += `<li class="flex items-start bg-white p-2 rounded border border-slate-100 shadow-sm">`;
+            testo += `<li class="flex items-start bg-white/5 p-2 rounded border border-white/5">`;
             if (peggiore.voto < 6) {
-                testo += `<span class="${peggiore.bgIcona} text-rose-600 w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></span>
-                          <div><strong class="text-rose-600">Da recuperare urgentemente ${peggiore.nome}:</strong> purtroppo qui i risultati crollano a una media di <strong>${peggiore.voto}</strong>.</div>`;
+                testo += `<span class="${peggiore.bgIcona} text-rose-400 w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs"></i></span>
+                          <div class="text-xs"><strong class="text-rose-400">Da recuperare urgentemente ${peggiore.nome}:</strong> purtroppo qui i risultati scendono a una media di <strong>${peggiore.voto}</strong>.</div>`;
             } else if (peggiore.voto < 6.5) {
-                testo += `<span class="${peggiore.bgIcona} text-amber-500 w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-circle-exclamation"></i></span>
-                          <div><strong class="text-amber-600">Attenzione a ${peggiore.nome}:</strong> fanno più fatica, con una media di <strong>${peggiore.voto}</strong>. Dobbiamo supportarli di più.</div>`;
+                testo += `<span class="${peggiore.bgIcona} text-amber-400 w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-circle-exclamation text-xs"></i></span>
+                          <div class="text-xs"><strong class="text-amber-400">Attenzione a ${peggiore.nome}:</strong> fanno più fatica, con una media di <strong>${peggiore.voto}</strong>. Dobbiamo supportarli di più.</div>`;
             } else {
-                 testo += `<span class="${peggiore.bgIcona} ${peggiore.textIcona} w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-thumbs-up"></i></span>
-                           <div><strong class="${peggiore.colore}">Nessun anello debole:</strong> persino nella materia "meno forte" (${peggiore.nome}), portano a casa un bel <strong>${peggiore.voto}</strong>.</div>`;
+                 testo += `<span class="${peggiore.bgIcona} ${peggiore.textIcona} w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-thumbs-up text-xs"></i></span>
+                           <div class="text-xs"><strong class="${peggiore.colore}">Nessun anello debole:</strong> persino nella materia meno forte (${peggiore.nome}), portano a casa un bel <strong>${peggiore.voto}</strong>.</div>`;
             }
             testo += `</li></ul></div>`;
 
             let consiglio = "";
             if (peggiore.voto < 6) {
-                consiglio = `Suggerisco di attivare subito uno sportello o dei piccoli gruppi di studio per ${peggiore.nome}, coinvolgendo i compagni più bravi in un'attività di peer-tutoring.`;
+                consiglio = `Suggerisco di attivare subito attività di recupero o studio assistito per ${peggiore.nome}, magari coinvolgendo i compagni più pronti in attività di peer-tutoring.`;
             } else if (mediaGenerale < 6.5) {
-                consiglio = `Il mio consiglio è di lavorare sull'autostima della classe. Incoraggiamoli e aiutiamoli a organizzare meglio lo studio a casa.`;
+                consiglio = `Incoraggiamo la classe lavorando sul metodo di studio individuale ed esercitazioni mirate.`;
             } else if (scarto > 1.5) {
-                consiglio = `Sono ragazzi intelligenti, dobbiamo capire insieme a loro perché c'è così tanta differenza di rendimento. Forse è un problema di approccio allo studio di quella disciplina?`;
+                consiglio = `Valutiamo le ragioni di questa forte asimmetria metodologica tra discipline in sede di consiglio di classe.`;
             } else {
-                consiglio = `Continuiamo così! L'armonia in classe e la costanza nello studio stanno dando i loro frutti. Manteniamo questo clima sereno.`;
+                consiglio = `Continuiamo su questa strada! L'armonia del gruppo-classe sta ripagando gli sforzi di tutti i docenti.`;
             }
 
-            testo += `<div class="mt-auto pt-3 border-t border-slate-200">
-                        <p class="text-sm italic text-slate-600"><span class="font-bold text-indigo-600 not-italic mr-1"><i class="fa-regular fa-lightbulb"></i> Il suggerimento:</span> ${consiglio}</p>
+            testo += `<div class="mt-auto pt-2 border-t border-white/10">
+                        <p class="text-xs italic text-slate-400"><span class="font-bold text-indigo-400 not-italic mr-1"><i class="fa-regular fa-lightbulb"></i> Il suggerimento:</span> ${consiglio}</p>
                       </div>`;
 
             testo += `</div>`;
             return testo;
         }
+    </script>
 
-        function renderTorteClasse(dataObj, containerId, prefixId) {
-            const container = document.getElementById(containerId);
-            for (let i = 0; i < dataObj.labels.length; i++) {
-                const classe = dataObj.labels[i];
-                const ita = dataObj.italiano[i];
-                const mat = dataObj.matematica[i];
-                const ing = dataObj.inglese[i];
-                const chartId = `pie-${prefixId}-${i}`;
+    <script>
+        // --- FUNZIONE: Rendering totale di una pagina/quadrimestre ---
+        function renderTabContent(yearId, yearData, prefixId) {
+            // Distruggi grafici precedenti per evitare conflitti di ridimensionamento
+            activeCharts = activeCharts.filter(c => {
+                // Utilizziamo .includes al posto di .startsWith per catturare sia "canvas-bar-..." che "chart-pie-..."
+                if (c.canvasId.includes(prefixId)) {
+                    if (c.chart && typeof c.chart.destroy === 'function') {
+                        c.chart.destroy();
+                    }
+                    return false;
+                }
+                return true;
+            });
 
+            // 1. Grafico a Barre Parallele
+            const ctxBar = document.getElementById(`canvas-bar-${prefixId}`);
+            const barChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: yearData.labels,
+                    datasets: [
+                        { label: 'Italiano', data: yearData.italiano, backgroundColor: subjectColors.italiano.bg, borderColor: subjectColors.italiano.border, borderWidth: 2, borderRadius: 6 },
+                        { label: 'Matematica', data: yearData.matematica, backgroundColor: subjectColors.matematica.bg, borderColor: subjectColors.matematica.border, borderWidth: 2, borderRadius: 6 },
+                        { label: 'Inglese', data: yearData.inglese, backgroundColor: subjectColors.inglese.bg, borderColor: subjectColors.inglese.border, borderWidth: 2, borderRadius: 6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 10, grid: { color: 'rgba(255, 255, 255, 0.08)' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 15, font: { weight: 'bold' } } },
+                        datalabels: {
+                            anchor: 'end', align: 'top', color: '#fff', font: { weight: 'bold', size: 10 },
+                            formatter: (val) => val.toFixed(1)
+                        }
+                    }
+                }
+            });
+            activeCharts.push({ canvasId: `canvas-bar-${prefixId}`, chart: barChart });
+
+            // Inserisci la lettura della rete statistica
+            document.getElementById(`rete-${prefixId}`).innerHTML = elaboraReteStatistica(yearData);
+
+            // 2. Griglia di grafici a torta con legenda a tabella
+            const grid = document.getElementById(`torte-${prefixId}-container`);
+            grid.innerHTML = ''; // Svuota contenitore
+
+            yearData.labels.forEach((className, i) => {
+                const ita = yearData.italiano[i];
+                const mat = yearData.matematica[i];
+                const ing = yearData.inglese[i];
+                const totalSum = ita + mat + ing;
+
+                const pIta = ((ita/totalSum)*100).toFixed(1);
+                const pMat = ((mat/totalSum)*100).toFixed(1);
+                const pIng = ((ing/totalSum)*100).toFixed(1);
+
+                const getBadge = (v) => {
+                    if (v >= 8) return `<span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">Eccellente</span>`;
+                    if (v >= 6) return `<span class="bg-blue-500/20 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-500/30">Medio</span>`;
+                    return `<span class="bg-rose-500/20 text-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-rose-500/30">In recupero</span>`;
+                };
+
+                const classPieId = `chart-pie-${prefixId}-${i}`;
                 const cardHTML = `
-                    <div class="card flex flex-col md:flex-row gap-6 hover:border-indigo-200 transition-colors">
-                        <div class="w-full md:w-5/12 flex flex-col items-center">
-                            <h4 class="w-full text-center font-bold text-slate-800 mb-3 bg-slate-50 py-2 rounded-lg border border-slate-200">${classe}</h4>
-                            <div class="relative h-48 w-full mb-3">
-                                <canvas id="${chartId}"></canvas>
-                            </div>
-                            <div class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-auto">
-                                <p class="text-xs text-center text-slate-500 font-semibold border-b border-slate-200 mb-1 pb-1">Cosa indicano i colori?</p>
-                                <div class="flex flex-col gap-1 text-xs text-slate-700 font-medium">
-                                    <div class="flex items-center justify-between px-2">
-                                        <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors.italiano.bg}; border: 1px solid ${colors.italiano.border}"></span> Italiano</span>
-                                        <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors.matematica.bg}; border: 1px solid ${colors.matematica.border}"></span> Matematica</span>
-                                        <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors.inglese.bg}; border: 1px solid ${colors.inglese.border}"></span> Inglese</span>
-                                    </div>
-                                </div>
+                    <div class="glass-panel p-5 flex flex-col md:flex-row gap-5 items-stretch">
+                        <!-- Grafico a Torta -->
+                        <div class="w-full md:w-5/12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 pb-4 md:pb-0 md:pr-4">
+                            <h4 class="text-xl font-black text-white text-center mb-3 bg-white/10 py-1.5 px-4 rounded-xl border border-white/10 w-full">${className}</h4>
+                            <div class="relative w-full h-40">
+                                <canvas id="${classPieId}"></canvas>
                             </div>
                         </div>
-                        <div class="w-full md:w-7/12">
-                            ${generaTestoClasse(classe, ita, mat, ing)}
+
+                        <!-- Legenda a tabella ed analisi -->
+                        <div class="w-full md:w-7/12 flex flex-col justify-between">
+                            <!-- Tabella dettagliata -->
+                            <div class="mb-4">
+                                <table class="w-full text-left text-[11px] border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-white/10 text-slate-400 font-bold uppercase tracking-wider">
+                                            <th class="pb-1.5">Materia</th>
+                                            <th class="pb-1.5 text-center">Voto</th>
+                                            <th class="pb-1.5 text-center">Peso</th>
+                                            <th class="pb-1.5 text-right">Esito</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5">
+                                        <tr>
+                                            <td class="py-1.5 font-semibold text-pink-300 flex items-center gap-1.5">
+                                                <span class="w-2.5 h-2.5 rounded-full" style="background:${subjectColors.italiano.bg}"></span>Italiano
+                                            </td>
+                                            <td class="py-1.5 text-center font-bold text-white">${ita.toFixed(2)}</td>
+                                            <td class="py-1.5 text-center text-slate-300 font-medium">${pIta}%</td>
+                                            <td class="py-1.5 text-right">${getBadge(ita)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 font-semibold text-cyan-300 flex items-center gap-1.5">
+                                                <span class="w-2.5 h-2.5 rounded-full" style="background:${subjectColors.matematica.bg}"></span>Matematica
+                                            </td>
+                                            <td class="py-1.5 text-center font-bold text-white">${mat.toFixed(2)}</td>
+                                            <td class="py-1.5 text-center text-slate-300 font-medium">${pMat}%</td>
+                                            <td class="py-1.5 text-right">${getBadge(mat)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 font-semibold text-violet-300 flex items-center gap-1.5">
+                                                <span class="w-2.5 h-2.5 rounded-full" style="background:${subjectColors.inglese.bg}"></span>Inglese
+                                            </td>
+                                            <td class="py-1.5 text-center font-bold text-white">${ing.toFixed(2)}</td>
+                                            <td class="py-1.5 text-center text-slate-300 font-medium">${pIng}%</td>
+                                            <td class="py-1.5 text-right">${getBadge(ing)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Commento del Docente -->
+                            <div class="border-t border-white/5 pt-3">
+                                ${generaDiscorsoProf(className, ita, mat, ing)}
+                            </div>
                         </div>
                     </div>
                 `;
-                container.insertAdjacentHTML('beforeend', cardHTML);
+                grid.insertAdjacentHTML('beforeend', cardHTML);
 
-                new Chart(document.getElementById(chartId), {
+                // Disegno della ciambella (Torta)
+                const ctxPie = document.getElementById(classPieId);
+                const pieChart = new Chart(ctxPie, {
                     type: 'doughnut',
                     data: {
                         labels: ['Italiano', 'Matematica', 'Inglese'],
                         datasets: [{
                             data: [ita, mat, ing],
-                            backgroundColor: [colors.italiano.bg, colors.matematica.bg, colors.inglese.bg],
-                            borderColor: [colors.italiano.border, colors.matematica.border, colors.inglese.border],
+                            backgroundColor: [subjectColors.italiano.bg, subjectColors.matematica.bg, subjectColors.inglese.bg],
+                            borderColor: ['rgba(255,255,255,0.2)','rgba(255,255,255,0.2)','rgba(255,255,255,0.2)'],
                             borderWidth: 2,
-                            hoverOffset: 4
+                            hoverOffset: 6
                         }]
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
-                        cutout: '45%', 
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '45%',
                         plugins: {
-                            legend: { display: false }, 
+                            legend: { display: false },
                             datalabels: {
                                 color: '#ffffff',
-                                font: { weight: 'bold', size: 13, family: 'Inter' },
-                                textShadowColor: 'rgba(0,0,0,0.6)', textShadowBlur: 4,
+                                font: { weight: 'bold', size: 11 },
+                                textShadowColor: 'rgba(0,0,0,0.8)', textShadowBlur: 4,
                                 formatter: (value, ctx) => {
                                     let sum = 0;
-                                    ctx.chart.data.datasets[0].data.map(data => sum += data);
+                                    ctx.chart.data.datasets[0].data.map(d => sum += d);
                                     return (value * 100 / sum).toFixed(1) + "%";
-                                },
-                                textAlign: 'center'
+                                }
                             }
                         }
                     }
                 });
+                activeCharts.push({ canvasId: classPieId, chart: pieChart });
+            });
+        }
+    </script>
+
+    <script>
+        // --- LOGICA DI NAVIGAZIONE E GESTIONE DELLO STATO ---
+        let currentPeriod = 'period-intermedio';
+
+        function switchPeriod(periodId) {
+            currentPeriod = periodId;
+            document.querySelectorAll('.period-container').forEach(p => p.classList.add('hidden'));
+            document.getElementById(periodId).classList.remove('hidden');
+
+            const btnInt = document.getElementById('btn-period-intermedio');
+            const btnFin = document.getElementById('btn-period-finale');
+
+            if (periodId === 'period-intermedio') {
+                btnInt.className = "btn-glow-indigo px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
+                btnFin.className = "btn-glow-rose px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
+                openTab('prime-i'); // Apri prima scheda disponibile
+            } else {
+                btnInt.className = "btn-glow-indigo px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
+                btnFin.className = "btn-glow-rose px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
+                openTabF('prime-f'); // Apri prima scheda disponibile
             }
         }
 
-        window.onload = function() {
-            // Torta Globale
-            let tuttiVoti = [
-                ...dataPrime.italiano, ...dataPrime.matematica, ...dataPrime.inglese,
-                ...dataSeconde.italiano, ...dataSeconde.matematica, ...dataSeconde.inglese,
-                ...dataTerze.italiano, ...dataTerze.matematica, ...dataTerze.inglese
-            ];
-            
-            let numEccellenze = tuttiVoti.filter(v => v >= 8).length;
-            let numIntermedi = tuttiVoti.filter(v => v >= 6 && v < 8).length;
-            let numCritici = tuttiVoti.filter(v => v < 6).length;
-            let totaleVoti = tuttiVoti.length;
+        // Navigazione schede 1° Quadrimestre (Intermedio)
+        function openTab(tabId) {
+            // Nascondi tutti i contenuti del periodo intermedio
+            document.querySelectorAll('#period-intermedio .tab-content').forEach(tc => tc.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
 
-            new Chart(document.getElementById('chartEccellenze'), {
-                type: 'pie',
-                data: {
-                    labels: ['Eccellenze', 'Intermedi', 'Criticità'],
-                    datasets: [{
-                        data: [numEccellenze, numIntermedi, numCritici],
-                        backgroundColor: [colors.eccellenze, colors.intermedi, colors.criticita],
-                        borderColor: '#ffffff', borderWidth: 3, hoverOffset: 5
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }, 
-                        datalabels: {
-                            color: '#fff', font: { weight: '900', size: 18, family: 'Inter' }, 
-                            textShadowColor: 'rgba(0,0,0,0.4)', textShadowBlur: 6,
-                            formatter: (value, ctx) => {
-                                if (value === 0) return '';
-                                return (value * 100 / totaleVoti).toFixed(1) + "%";
-                            }
-                        }
-                    }
-                }
+            // Gestione bottoni tab
+            document.querySelectorAll('.tab-btn-i').forEach(btn => {
+                btn.className = "tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10";
             });
 
-            let percEcc = (numEccellenze * 100 / totaleVoti).toFixed(1);
-            let percInt = (numIntermedi * 100 / totaleVoti).toFixed(1);
-            let percCri = (numCritici * 100 / totaleVoti).toFixed(1);
-            let totalePositivo = (parseFloat(percEcc) + parseFloat(percInt)).toFixed(1);
+            // Trova il bottone attivo
+            const btns = document.querySelectorAll('.tab-btn-i');
+            if (tabId === 'prime-i') {
+                btns[0].className = "tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-indigo-600/30 border border-indigo-400 text-white shadow-lg shadow-indigo-500/20";
+                renderTabContent('prime', rawIntermedie.prime, 'prime-i');
+            } else if (tabId === 'seconde-i') {
+                btns[1].className = "tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-indigo-600/30 border border-indigo-400 text-white shadow-lg shadow-indigo-500/20";
+                renderTabContent('seconde', rawIntermedie.seconde, 'seconde-i');
+            } else if (tabId === 'terze-i') {
+                btns[2].className = "tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-indigo-600/30 border border-indigo-400 text-white shadow-lg shadow-indigo-500/20";
+                renderTabContent('terze', rawIntermedie.terze, 'terze-i');
+            }
+        }
 
-            document.getElementById('testo-globale').innerHTML = `
-                <p class="text-lg font-medium text-slate-700">In questo grafico riassumiamo tutti i <strong>${totaleVoti}</strong> voti presi dai nostri ragazzi in tutti gli anni (Prime, Seconde e Terze).</p>
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-emerald-800 font-bold uppercase tracking-wide text-xs">Voti Intermedi (6 - 7.9)</span>
-                            <span class="text-emerald-700 font-black text-xl">${percInt}%</span>
-                        </div>
-                        <p class="text-emerald-700 text-xs leading-tight">La maggioranza dei nostri alunni si attesta su una preparazione solida e sufficiente, superando le prove senza particolari problemi.</p>
-                    </div>
-                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-amber-800 font-bold uppercase tracking-wide text-xs">I Più Bravi in Assoluto</span>
-                            <span class="text-amber-700 font-black text-xl">${percEcc}%</span>
-                        </div>
-                        <p class="text-amber-700 text-xs leading-tight">È bellissimo notare che quasi un ragazzo su tre ha preso un voto alto (da 8 in su). Stiamo facendo un ottimo lavoro per valorizzare chi si impegna tanto.</p>
-                    </div>
-                </div>
-                <div class="mt-4 p-4 border-l-4 border-rose-400 bg-rose-50 rounded-r-lg">
-                    <h4 class="text-rose-800 font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1"></i> I ragazzi che fanno fatica (${percCri}%)</h4>
-                    <p class="text-rose-700 text-sm">C'è una piccola parte di insufficienze. Non sono tante, ma il nostro compito ora è concentrarci per aiutare questi alunni, magari con recuperi mirati.</p>
-                </div>
-            `;
+        // Navigazione schede 2° Quadrimestre (Finale)
+        function openTabF(tabId) {
+            document.querySelectorAll('#period-finale .tab-content').forEach(tc => tc.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
 
-            // Grafici a Barre
-            const barOptions = {
-                responsive: true, maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true, max: 10, grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } },
-                plugins: { legend: { display: false }, datalabels: { display: true, color: '#475569', anchor: 'end', align: 'top', font: {weight: 'bold', size: 11}, formatter: (val) => val.toFixed(1) } }
-            };
+            document.querySelectorAll('.tab-btn-f').forEach(btn => {
+                btn.className = "tab-btn-f px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10";
+            });
 
-            const getBarDatasets = (dataObj) => [
-                { label: 'Italiano', data: dataObj.italiano, backgroundColor: colors.italiano.bg, borderColor: colors.italiano.border, borderWidth: 1, borderRadius: 4 },
-                { label: 'Matematica', data: dataObj.matematica, backgroundColor: colors.matematica.bg, borderColor: colors.matematica.border, borderWidth: 1, borderRadius: 4 },
-                { label: 'Inglese', data: dataObj.inglese, backgroundColor: colors.inglese.bg, borderColor: colors.inglese.border, borderWidth: 1, borderRadius: 4 }
-            ];
+            const btns = document.querySelectorAll('.tab-btn-f');
+            if (tabId === 'prime-f') {
+                btns[0].className = "tab-btn-f px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-rose-600/30 border border-rose-400 text-white shadow-lg shadow-rose-500/20";
+                renderTabContent('prime', rawFinali.prime, 'prime-f');
+            } else if (tabId === 'seconde-f') {
+                btns[1].className = "tab-btn-f px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-rose-600/30 border border-rose-400 text-white shadow-lg shadow-rose-500/20";
+                renderTabContent('seconde', rawFinali.seconde, 'seconde-f');
+            }
+        }
 
-            new Chart(document.getElementById('barPrime'), { type: 'bar', data: { labels: dataPrime.labels, datasets: getBarDatasets(dataPrime) }, options: barOptions });
-            new Chart(document.getElementById('barSeconde'), { type: 'bar', data: { labels: dataSeconde.labels, datasets: getBarDatasets(dataSeconde) }, options: barOptions });
-            new Chart(document.getElementById('barTerze'), { type: 'bar', data: { labels: dataTerze.labels, datasets: getBarDatasets(dataTerze) }, options: barOptions });
-
-            // INSERIMENTO DELLE "RETI STATISTICHE" (Il confronto incrociato materia per materia)
-            document.getElementById('rete-prime').innerHTML = generaReteStatistica(dataPrime);
-            document.getElementById('rete-seconde').innerHTML = generaReteStatistica(dataSeconde);
-            document.getElementById('rete-terze').innerHTML = generaReteStatistica(dataTerze);
-
-            // Generazione Torte e Testi per classe
-            renderTorteClasse(dataPrime, 'torte-prime-container', 'prime');
-            renderTorteClasse(dataSeconde, 'torte-seconde-container', 'seconde');
-            renderTorteClasse(dataTerze, 'torte-terze-container', 'terze');
+        // Avvio automatico al caricamento della pagina
+        window.onload = function() {
+            switchPeriod('period-intermedio');
         };
     </script>
 </body>
