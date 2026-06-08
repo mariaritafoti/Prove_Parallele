@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -27,9 +27,9 @@
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -3;
-            background: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.4) 0%, transparent 50%),
-                        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.35) 0%, transparent 50%),
-                        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.3) 0%, transparent 60%),
+            background: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.45) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.35) 0%, transparent 60%),
                         #0a0d22;
         }
 
@@ -43,17 +43,17 @@
 
         /* Plance di vetro trasparente per non coprire le bolle */
         .glass-panel {
-            background: rgba(20, 26, 56, 0.65);
+            background: rgba(20, 26, 56, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 2px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
             border-radius: 1.5rem;
             transition: all 0.3s ease;
         }
         .glass-panel:hover {
             border-color: rgba(255, 255, 255, 0.22);
-            box-shadow: 0 15px 45px 0 rgba(139, 92, 246, 0.15);
+            box-shadow: 0 15px 45px 0 rgba(139, 92, 246, 0.2);
         }
 
         /* Pulsanti neon e animazioni al passaggio */
@@ -106,7 +106,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Personalizzazione tabelle */
         table th {
             letter-spacing: 0.05em;
         }
@@ -136,7 +135,6 @@
                 </p>
             </div>
             
-            <!-- Logo a destra leggero e incorniciato -->
             <div class="flex items-center gap-3 shrink-0">
                 <div class="bg-white/10 p-2 rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
                     <img src="catona.png" alt="Logo Catona" id="school-logo-img" class="h-12 w-auto object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -148,20 +146,20 @@
 
     <main class="max-w-7xl mx-auto px-4 z-10 relative">
         
-        <!-- Navigazione tra il primo quadrimestre (Intermedie) e il secondo (Finali) -->
-        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-8">
-            <button onclick="switchPeriod('period-intermedio')" id="btn-period-intermedio" class="btn-glow-indigo px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2">
+        <div class="flex flex-col lg:flex-row gap-3 justify-center mb-8">
+            <button onclick="switchPeriod('period-intermedio')" id="btn-period-intermedio" class="btn-glow-indigo px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2">
                 <i class="fa-solid fa-calendar-days"></i> 1° Quadrimestre (Prove Intermedie)
             </button>
-            <button onclick="switchPeriod('period-finale')" id="btn-period-finale" class="btn-glow-rose px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60">
+            <button onclick="switchPeriod('period-finale')" id="btn-period-finale" class="btn-glow-rose px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60">
                 <i class="fa-solid fa-flag-checkered"></i> 2° Quadrimestre (Prove Finali)
+            </button>
+            <button onclick="switchPeriod('period-comparativo')" id="btn-period-comparativo" class="btn-glow-amber px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60">
+                <i class="fa-solid fa-chart-line"></i> Analisi Comparativa ed Evoluzione (1° vs 2° Q.)
             </button>
         </div>
 
         <!-- ==================== CONTENUTI 1° QUADRIMESTRE (INTERMEDIE) ==================== -->
         <div id="period-intermedio" class="period-container">
-            
-            <!-- Schede interne di navigazione per le classi del 1° Quadrimestre -->
             <nav class="flex flex-wrap justify-center gap-2 mb-8 border-b border-white/10 pb-4">
                 <button onclick="openTab('prime-i')" class="tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-indigo-600/30 border border-indigo-400 text-white shadow-lg shadow-indigo-500/20">
                     <i class="fa-solid fa-1 mr-1"></i> Classi Prime
@@ -174,7 +172,6 @@
                 </button>
             </nav>
 
-            <!-- CLASSI PRIME - INTERMEDIE -->
             <div id="prime-i" class="tab-content active">
                 <div class="glass-panel p-6 mb-8 border-t-4 border-t-indigo-400">
                     <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
@@ -189,7 +186,6 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-i-container"></div>
             </div>
 
-            <!-- CLASSI SECONDE - INTERMEDIE -->
             <div id="seconde-i" class="tab-content">
                 <div class="glass-panel p-6 mb-8 border-t-4 border-t-indigo-400">
                     <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
@@ -204,7 +200,6 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-i-container"></div>
             </div>
 
-            <!-- CLASSI TERZE - INTERMEDIE -->
             <div id="terze-i" class="tab-content">
                 <div class="glass-panel p-6 mb-8 border-t-4 border-t-indigo-400">
                     <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
@@ -218,13 +213,10 @@
                 </div>
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-terze-i-container"></div>
             </div>
-
         </div>
 
         <!-- ==================== CONTENUTI 2° QUADRIMESTRE (FINALI) ==================== -->
         <div id="period-finale" class="period-container hidden">
-            
-            <!-- Schede interne di navigazione per le classi del 2° Quadrimestre -->
             <nav class="flex flex-wrap justify-center gap-2 mb-8 border-b border-white/10 pb-4">
                 <button onclick="openTabF('prime-f')" class="tab-btn-f px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-rose-600/30 border border-rose-400 text-white shadow-lg shadow-rose-500/20">
                     <i class="fa-solid fa-1 mr-1"></i> Classi Prime
@@ -234,7 +226,6 @@
                 </button>
             </nav>
 
-            <!-- CLASSI PRIME - FINALI -->
             <div id="prime-f" class="tab-content active">
                 <div class="glass-panel p-6 mb-8 border-t-4 border-t-rose-400">
                     <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
@@ -249,7 +240,6 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-f-container"></div>
             </div>
 
-            <!-- CLASSI SECONDE - FINALI -->
             <div id="seconde-f" class="tab-content">
                 <div class="glass-panel p-6 mb-8 border-t-4 border-t-rose-400">
                     <h3 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
@@ -263,7 +253,158 @@
                 </div>
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-f-container"></div>
             </div>
+        </div>
 
+        <!-- ==================== CONTENUTI SEZIONE COMPARATIVA (1° VS 2° Q.) ==================== -->
+        <div id="period-comparativo" class="period-container hidden">
+            <div class="glass-panel p-6 mb-8 border-t-4 border-t-amber-400">
+                <h3 class="text-2xl font-black text-white mb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-right-left text-amber-400"></i> Confronto Evolutivo e Diagnostica Globale d'Istituto
+                </h3>
+                <p class="text-sm text-slate-300 mb-6 leading-relaxed">
+                    Analisi visiva e numerica immediata dello sviluppo degli apprendimenti confrontando il <strong>1° Quadrimestre (Intermedie)</strong> con il <strong>2° Quadrimestre (Finali)</strong>.
+                </p>
+                
+                <!-- Grafico a Doppia Colonna: Confronto Medie Generali Classi -->
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-8">
+                    <h4 class="text-lg font-bold text-amber-300 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-bar"></i> Crescita delle Medie Generali per Sezione (1° vs 2° Quadrimestre)
+                    </h4>
+                    <p class="text-xs text-slate-400 mb-4">La media generale di ogni classe calcolata aggregando Italiano, Matematica e Inglese.</p>
+                    <div class="relative h-[360px] w-full">
+                        <canvas id="canvas-comparativo-classi"></canvas>
+                    </div>
+                </div>
+
+                <!-- Griglia Dettagliata di Confronto Orizzontale Classe per Classe -->
+                <div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-8">
+                    <h4 class="text-lg font-bold text-cyan-300 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-table"></i> Griglia Comparativa Sezioni (Prime e Seconde)
+                    </h4>
+                    <p class="text-xs text-slate-400 mb-4">Raffronto diretto e calcolo immediato dello scarto (Delta) tra il primo e il secondo quadrimestre.</p>
+                    <div class="overflow-x-auto rounded-lg border border-white/5">
+                        <table class="w-full text-left text-xs border-collapse min-w-[700px]">
+                            <thead>
+                                <tr class="bg-white/10 text-slate-300 font-bold uppercase tracking-wider border-b border-white/10">
+                                    <th class="p-3">Classe</th>
+                                    <th class="p-3 text-pink-300"><i class="fa-solid fa-book mr-1.5"></i>Italiano (1°Q → 2°Q)</th>
+                                    <th class="p-3 text-cyan-300"><i class="fa-solid fa-square-root-variable mr-1.5"></i>Matematica (1°Q → 2°Q)</th>
+                                    <th class="p-3 text-violet-300"><i class="fa-solid fa-language mr-1.5"></i>Inglese (1°Q → 2°Q)</th>
+                                    <th class="p-3 text-amber-300 text-center"><i class="fa-solid fa-calculator mr-1.5"></i>Media Totale (1°Q → 2°Q)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-slate-300" id="tbody-griglia-comparativa">
+                                <!-- Popolato dinamicamente da JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Nuovo Layout Semplificato: Torta 1° Q vs Torta 2° Q con Tabelle di Legenda Chiarissime -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    
+                    <!-- 1° Quadrimestre Globale -->
+                    <div class="bg-white/5 p-5 rounded-xl border border-white/10 flex flex-col items-center">
+                        <h4 class="text-lg font-bold text-indigo-300 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie"></i> Analisi Globale 1° Quadrimestre
+                        </h4>
+                        <p class="text-xs text-slate-400 mb-4 text-center">Ripartizione delle valutazioni registrate nelle prove intermedie.</p>
+                        
+                        <div class="w-full flex flex-col md:flex-row items-center justify-around gap-6">
+                            <div class="relative w-48 h-48 shrink-0">
+                                <canvas id="canvas-torta-fasce-q1"></canvas>
+                            </div>
+                            <!-- Tabella Legenda Semplice -->
+                            <div class="w-full">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-white/10 text-slate-400 font-bold">
+                                            <th class="pb-1">Fascia di Voto</th>
+                                            <th class="pb-1 text-center">Prove</th>
+                                            <th class="pb-1 text-right">Percentuale</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5" id="tbody-q1-stats">
+                                        <!-- Popolato dinamicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2° Quadrimestre Globale -->
+                    <div class="bg-white/5 p-5 rounded-xl border border-white/10 flex flex-col items-center">
+                        <h4 class="text-lg font-bold text-rose-300 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie"></i> Analisi Globale 2° Quadrimestre
+                        </h4>
+                        <p class="text-xs text-slate-400 mb-4 text-center">Ripartizione delle valutazioni registrate nelle prove finali.</p>
+                        
+                        <div class="w-full flex flex-col md:flex-row items-center justify-around gap-6">
+                            <div class="relative w-48 h-48 shrink-0">
+                                <canvas id="canvas-torta-fasce-q2"></canvas>
+                            </div>
+                            <!-- Tabella Legenda Semplice -->
+                            <div class="w-full">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-white/10 text-slate-400 font-bold">
+                                            <th class="pb-1">Fascia di Voto</th>
+                                            <th class="pb-1 text-center">Prove</th>
+                                            <th class="pb-1 text-right">Percentuale</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5" id="tbody-q2-stats">
+                                        <!-- Popolato dinamicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Grafico Comparativo Semplificato 1° vs 2° Q per Fasce (Sostituisce le linee confuse!) -->
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10 mb-8">
+                    <h4 class="text-base font-bold text-cyan-300 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line"></i> Come sono cambiate le percentuali dal 1° al 2° Quadrimestre
+                    </h4>
+                    <p class="text-xs text-slate-400 mb-4">Un confronto diretto per vedere subito l'impatto e la diminuzione delle difficoltà scolastiche.</p>
+                    <div class="relative h-[280px] w-full">
+                        <canvas id="canvas-comparativo-fasce-barre"></canvas>
+                    </div>
+                </div>
+
+                <!-- Relazione Didattica e Pedagogica Semplificata e Ridotta (Poche parole scritte) -->
+                <div class="bg-indigo-950/40 p-5 rounded-2xl border border-indigo-500/20">
+                    <h4 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-file-signature text-cyan-400"></i> Sintesi Funzione Strumentale Area 2
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-200 leading-relaxed">
+                        <div>
+                            <h5 class="font-bold text-cyan-300 text-sm mb-1.5"><i class="fa-solid fa-square-root-variable mr-1"></i> Recupero Matematica</h5>
+                            <p>
+                                Notevole ripresa nel 2° Quadrimestre per le sezioni <strong>I C</strong> e <strong>II C</strong>, che recuperano brillantemente le insufficienze iniziali portandosi a un solido <strong>8.00</strong> di media finale.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h5 class="font-bold text-violet-300 text-sm mb-1.5"><i class="fa-solid fa-language mr-1"></i> Eccellenze Inglese</h5>
+                            <p>
+                                L'Inglese si conferma la materia d'eccellenza trainante. Le sezioni <strong>I D</strong> e <strong>II D</strong> crescono ulteriormente consolidando medie spettacolari di <strong>9.36</strong> e <strong>9.44</strong>.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h5 class="font-bold text-pink-300 text-sm mb-1.5"><i class="fa-solid fa-book mr-1"></i> Stabilità Italiano</h5>
+                            <p>
+                                L'andamento in Italiano si mantiene lineare e bilanciato in tutte le sezioni, registrando una crescita positiva nella classe <strong>I B</strong> (passata da 7.00 a 8.00).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </main>
@@ -276,7 +417,7 @@
         schoolLogo.src = 'catona.png';
 
         let bubbles = [];
-        const numBubbles = 16; // Numero di bolle fluttuanti
+        const numBubbles = 16; 
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -287,16 +428,16 @@
 
         class SoapBubble {
             constructor() {
-                // Le bolle nascono già sparse ovunque nello schermo!
-                this.radius = Math.random() * 45 + 50; // Dimensione generosa
+                // Le bolle nascono già sparse casualmente ovunque nello schermo!
+                this.radius = Math.random() * 45 + 50; 
                 this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
                 this.y = Math.random() * (canvas.height - this.radius * 2) + this.radius;
                 
-                // Direzioni e velocità completamente casuali avanti e indietro
+                // Direzioni e velocità casuali per muoversi in lungo e in largo
                 this.vx = (Math.random() - 0.5) * 1.6;
                 this.vy = (Math.random() - 0.5) * 1.6;
                 
-                this.hue = Math.random() * 360; // Tinta iridescente principale
+                this.hue = Math.random() * 360; 
                 this.wobbleSpeed = Math.random() * 0.04 + 0.02;
                 this.wobbleAmount = Math.random() * 3 + 2;
                 this.wobbleAngle = Math.random() * Math.PI * 2;
@@ -307,7 +448,7 @@
                 this.y += this.vy;
                 this.wobbleAngle += this.wobbleSpeed;
 
-                // Rimbalzo avanti e indietro sui bordi dello schermo
+                // Rimbalzo avanti e indietro sui bordi
                 if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
                     this.vx = -this.vx;
                     this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
@@ -321,11 +462,10 @@
             draw() {
                 ctx.save();
                 
-                // Leggera distorsione elastica (wobble) per rendere la bolla realistica
                 let wRadiusX = this.radius + Math.sin(this.wobbleAngle) * this.wobbleAmount;
                 let wRadiusY = this.radius + Math.cos(this.wobbleAngle) * this.wobbleAmount;
 
-                // 1. Sfumatura iridescente della bolla di sapone
+                // Sfumatura interna iridescente tridimensionale
                 let grad = ctx.createRadialGradient(
                     this.x - wRadiusX * 0.3, this.y - wRadiusY * 0.3, wRadiusX * 0.1,
                     this.x, this.y, wRadiusX
@@ -341,7 +481,7 @@
                 ctx.ellipse(this.x, this.y, wRadiusX, wRadiusY, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // 2. Tratto del bordo iridescente e colorato
+                // Tracciato del bordo cangiante
                 let strokeGrad = ctx.createLinearGradient(
                     this.x - wRadiusX, this.y - wRadiusY,
                     this.x + wRadiusX, this.y + wRadiusY
@@ -354,13 +494,13 @@
                 ctx.lineWidth = 4;
                 ctx.stroke();
 
-                // 3. Punto di luce bianca (riflesso)
+                // Riflesso di luce bianca in alto a sinistra
                 ctx.beginPath();
                 ctx.ellipse(this.x - wRadiusX * 0.4, this.y - wRadiusY * 0.4, wRadiusX * 0.2, wRadiusY * 0.08, Math.PI / 4, 0, Math.PI * 2);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
                 ctx.fill();
 
-                // 4. Ritaglio del logo scolastico interno alla bolla
+                // Disegno del logo al centro ritagliato in tondo
                 let imgSize = this.radius * 0.88;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, imgSize / 2, 0, Math.PI * 2);
@@ -369,7 +509,6 @@
                 if (schoolLogo.complete && schoolLogo.naturalWidth !== 0) {
                     ctx.drawImage(schoolLogo, this.x - imgSize / 2, this.y - imgSize / 2, imgSize, imgSize);
                 } else {
-                    // Testo di riserva in mancanza dell'immagine
                     ctx.fillStyle = '#ffffff';
                     ctx.font = `bold ${this.radius * 0.38}px Outfit`;
                     ctx.textAlign = 'center';
@@ -378,7 +517,7 @@
                 }
                 ctx.restore();
 
-                // 5. Cornice circolare colorata attorno al logo
+                // Bordo protettivo e colorato del logo scolastico
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, imgSize / 2, 0, Math.PI * 2);
@@ -389,7 +528,7 @@
             }
         }
 
-        // Inizializza l'array di bolle già sparse per lo schermo
+        // Popola l'array di bolle già distribuite all'inizio della pagina
         for (let i = 0; i < numBubbles; i++) {
             bubbles.push(new SoapBubble());
         }
@@ -407,8 +546,6 @@
 
     <script>
         // --- CONFIGURAZIONE DATI E STRUTTURE STATISTICHE ---
-        
-        // 1. Dati Prove Parallele Intermedie (1° Quadrimestre 25-26)
         const rawIntermedie = {
             prime: {
                 labels: ['I A', 'I B', 'I C', 'I D'],
@@ -430,7 +567,6 @@
             }
         };
 
-        // 2. Dati Prove Parallele Finali (2° Quadrimestre 25-26)
         const rawFinali = {
             prime: {
                 labels: ['I A', 'I B', 'I C', 'I D'],
@@ -446,23 +582,20 @@
             }
         };
 
-        // Paletta di colori per i grafici
         const subjectColors = {
-            italiano: { bg: 'rgba(236, 72, 153, 0.85)', border: '#db2777' },   // Fucsia vibrante
-            matematica: { bg: 'rgba(6, 182, 212, 0.85)', border: '#0891b2' }, // Cyan
-            inglese: { bg: 'rgba(139, 92, 246, 0.85)', border: '#7c3aed' }    // Violetto
+            italiano: { bg: 'rgba(236, 72, 153, 0.85)', border: '#db2777' },   
+            matematica: { bg: 'rgba(6, 182, 212, 0.85)', border: '#0891b2' }, 
+            inglese: { bg: 'rgba(139, 92, 246, 0.85)', border: '#7c3aed' }    
         };
 
-        // Configurazione globale ChartDataLabels
         Chart.register(ChartDataLabels);
         Chart.defaults.color = 'rgba(255, 255, 255, 0.8)';
         Chart.defaults.font.family = "'Outfit', sans-serif";
-        Chart.defaults.animation = false; // Disabilita animazioni per evitare sfarfallii su ridimensionamento
+        Chart.defaults.animation = false; 
 
-        // Array per tracciare le istanze dei grafici e distruggerli se necessario
         let activeCharts = [];
 
-        // --- NUOVA FUNZIONE: Generatore Rete Statistica Disciplinare (Confronto Orizzontale) ---
+        // Rete statistica di base
         function elaboraReteStatistica(dataObj) {
             function analizzaMateria(nomeMateria, arrayVoti, classi, coloreTesto, icona, media) {
                 let maxVoto = Math.max(...arrayVoti);
@@ -518,20 +651,12 @@
             return html;
         }
 
-        // --- NUOVA FUNZIONE: Generatore di Testi Singola Classe ---
+        // Tono da professoressa accogliente e descrittivo
         function generaDiscorsoProf(classe, ita, mat, ing) {
             const mediaGenerale = ((ita + mat + ing) / 3).toFixed(2);
-            const materie = [
-                { nome: 'Italiano', voto: ita, colore: 'text-pink-300', bgIcona: 'bg-pink-500/10', textIcona: 'text-pink-400' },
-                { nome: 'Matematica', voto: mat, colore: 'text-cyan-300', bgIcona: 'bg-cyan-500/10', textIcona: 'text-cyan-400' },
-                { nome: 'Inglese', voto: ing, colore: 'text-violet-300', bgIcona: 'bg-violet-500/10', textIcona: 'text-violet-400' }
-            ];
-            materie.sort((a, b) => b.voto - a.voto); 
-            
-            const migliore = materie[0];
-            const peggiore = materie[2];
-            const intermedia = materie[1];
-            const scarto = (migliore.voto - peggiore.voto).toFixed(2);
+            const maxVal = Math.max(ita, mat, ing);
+            const minVal = Math.min(ita, mat, ing);
+            const deltaMaxMin = (maxVal - minVal).toFixed(2);
 
             let testo = `<div class="text-[13px] text-slate-300 leading-relaxed h-full flex flex-col gap-3">`;
             
@@ -546,48 +671,13 @@
             } else {
                 testo += `<p>La situazione della <strong>${classe}</strong> richiede la nostra massima attenzione. La media di <span class="bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded border border-rose-500/30">${mediaGenerale}</span> indica che la classe è in forte difficoltà e molti alunni si sentono disorientati.</p>`;
             }
-            
-            if (scarto <= 0.6) {
-                testo += `<p class="mt-2 text-xs">Guardando il grafico a torta, notiamo un andamento <strong>molto equilibrato</strong>: l'impegno è ben distribuito tra le varie materie senza grandi sbalzi.</p>`;
-            } else if (scarto >= 1.5) {
-                testo += `<p class="mt-2 text-xs text-amber-300">Notiamo però un <strong>forte squilibrio</strong> (differenza di ben ${scarto} punti tra la migliore e la peggiore). I ragazzi si applicano molto in alcuni ambiti, ma tendono a trascurarne altri.</p>`;
-            }
             testo += `</div>`;
 
-            testo += `<div>`;
-            testo += `<h5 class="font-bold text-white mb-2 text-xs uppercase tracking-wider">Il dettaglio delle materie</h5>`;
-            testo += `<ul class="space-y-2">`;
-            
-            testo += `<li class="flex items-start bg-white/5 p-2 rounded border border-white/5">
-                        <span class="${migliore.bgIcona} ${migliore.textIcona} w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-star text-xs"></i></span>
-                        <div class="text-xs"><strong class="${migliore.colore}">Il punto di forza è ${migliore.nome}:</strong> la classe brilla con una media di <strong>${migliore.voto}</strong>.</div>
-                      </li>`;
-
-            testo += `<li class="flex items-start bg-white/5 p-2 rounded border border-white/5">
-                        <span class="${intermedia.bgIcona} ${intermedia.textIcona} w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-check text-xs"></i></span>
-                        <div class="text-slate-300 text-xs mt-0.5">Ottima tenuta anche in <strong>${intermedia.nome}</strong> con un buon <strong>${intermedia.voto}</strong>.</div>
-                      </li>`;
-
-            testo += `<li class="flex items-start bg-white/5 p-2 rounded border border-white/5">`;
-            if (peggiore.voto < 6) {
-                testo += `<span class="${peggiore.bgIcona} text-rose-400 w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs"></i></span>
-                          <div class="text-xs"><strong class="text-rose-400">Da recuperare urgentemente ${peggiore.nome}:</strong> purtroppo qui i risultati scendono a una media di <strong>${peggiore.voto}</strong>.</div>`;
-            } else if (peggiore.voto < 6.5) {
-                testo += `<span class="${peggiore.bgIcona} text-amber-400 w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-circle-exclamation text-xs"></i></span>
-                          <div class="text-xs"><strong class="text-amber-400">Attenzione a ${peggiore.nome}:</strong> fanno più fatica, con una media di <strong>${peggiore.voto}</strong>. Dobbiamo supportarli di più.</div>`;
-            } else {
-                 testo += `<span class="${peggiore.bgIcona} ${peggiore.textIcona} w-7 h-7 rounded flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-thumbs-up text-xs"></i></span>
-                           <div class="text-xs"><strong class="${peggiore.colore}">Nessun anello debole:</strong> persino nella materia meno forte (${peggiore.nome}), portano a casa un bel <strong>${peggiore.voto}</strong>.</div>`;
-            }
-            testo += `</li></ul></div>`;
-
             let consiglio = "";
-            if (peggiore.voto < 6) {
-                consiglio = `Suggerisco di attivare subito attività di recupero o studio assistito per ${peggiore.nome}, magari coinvolgendo i compagni più pronti in attività di peer-tutoring.`;
+            if (minVal < 6) {
+                consiglio = `Suggerisco di attivare subito attività di recupero o studio assistito, magari coinvolgendo i compagni più pronti in attività di peer-tutoring.`;
             } else if (mediaGenerale < 6.5) {
                 consiglio = `Incoraggiamo la classe lavorando sul metodo di studio individuale ed esercitazioni mirate.`;
-            } else if (scarto > 1.5) {
-                consiglio = `Valutiamo le ragioni di questa forte asimmetria metodologica tra discipline in sede di consiglio di classe.`;
             } else {
                 consiglio = `Continuiamo su questa strada! L'armonia del gruppo-classe sta ripagando gli sforzi di tutti i docenti.`;
             }
@@ -602,11 +692,9 @@
     </script>
 
     <script>
-        // --- FUNZIONE: Rendering totale di una pagina/quadrimestre ---
         function renderTabContent(yearId, yearData, prefixId) {
-            // Distruggi grafici precedenti per evitare conflitti di ridimensionamento
+            // Distruggi grafici precedenti per evitare raddoppi o blocchi di memoria
             activeCharts = activeCharts.filter(c => {
-                // Utilizziamo .includes al posto di .startsWith per catturare sia "canvas-bar-..." che "chart-pie-..."
                 if (c.canvasId.includes(prefixId)) {
                     if (c.chart && typeof c.chart.destroy === 'function') {
                         c.chart.destroy();
@@ -616,7 +704,7 @@
                 return true;
             });
 
-            // 1. Grafico a Barre Parallele
+            // Grafico a barre
             const ctxBar = document.getElementById(`canvas-bar-${prefixId}`);
             const barChart = new Chart(ctxBar, {
                 type: 'bar',
@@ -646,12 +734,12 @@
             });
             activeCharts.push({ canvasId: `canvas-bar-${prefixId}`, chart: barChart });
 
-            // Inserisci la lettura della rete statistica
+            // Rete statistica sotto-grafico
             document.getElementById(`rete-${prefixId}`).innerHTML = elaboraReteStatistica(yearData);
 
-            // 2. Griglia di grafici a torta con legenda a tabella
+            // Generazione ciambelle per classe singola
             const grid = document.getElementById(`torte-${prefixId}-container`);
-            grid.innerHTML = ''; // Svuota contenitore
+            grid.innerHTML = ''; 
 
             yearData.labels.forEach((className, i) => {
                 const ita = yearData.italiano[i];
@@ -672,7 +760,6 @@
                 const classPieId = `chart-pie-${prefixId}-${i}`;
                 const cardHTML = `
                     <div class="glass-panel p-5 flex flex-col md:flex-row gap-5 items-stretch">
-                        <!-- Grafico a Torta -->
                         <div class="w-full md:w-5/12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 pb-4 md:pb-0 md:pr-4">
                             <h4 class="text-xl font-black text-white text-center mb-3 bg-white/10 py-1.5 px-4 rounded-xl border border-white/10 w-full">${className}</h4>
                             <div class="relative w-full h-40">
@@ -680,9 +767,7 @@
                             </div>
                         </div>
 
-                        <!-- Legenda a tabella ed analisi -->
                         <div class="w-full md:w-7/12 flex flex-col justify-between">
-                            <!-- Tabella dettagliata -->
                             <div class="mb-4">
                                 <table class="w-full text-left text-[11px] border-collapse">
                                     <thead>
@@ -722,7 +807,6 @@
                                 </table>
                             </div>
 
-                            <!-- Commento del Docente -->
                             <div class="border-t border-white/5 pt-3">
                                 ${generaDiscorsoProf(className, ita, mat, ing)}
                             </div>
@@ -731,7 +815,6 @@
                 `;
                 grid.insertAdjacentHTML('beforeend', cardHTML);
 
-                // Disegno della ciambella (Torta)
                 const ctxPie = document.getElementById(classPieId);
                 const pieChart = new Chart(ctxPie, {
                     type: 'doughnut',
@@ -770,7 +853,285 @@
     </script>
 
     <script>
-        // --- LOGICA DI NAVIGAZIONE E GESTIONE DELLO STATO ---
+        function renderComparativeTab() {
+            // Pulisci istanze grafiche precedenti
+            activeCharts = activeCharts.filter(c => {
+                if (c.canvasId.includes("comparativo") || c.canvasId.includes("torta-fasce")) {
+                    if (c.chart && typeof c.chart.destroy === 'function') {
+                        c.chart.destroy();
+                    }
+                    return false;
+                }
+                return true;
+            });
+
+            // Classi in comune tra i due quadrimestri (Prime e Seconde)
+            const classLabels = ['I A', 'I B', 'I C', 'I D', 'II A', 'II B', 'II C', 'II D'];
+            
+            // Calcolo Medie Generali Intermedie
+            const medieQ1 = [
+                (rawIntermedie.prime.italiano[0] + rawIntermedie.prime.matematica[0] + rawIntermedie.prime.inglese[0])/3,
+                (rawIntermedie.prime.italiano[1] + rawIntermedie.prime.matematica[1] + rawIntermedie.prime.inglese[1])/3,
+                (rawIntermedie.prime.italiano[2] + rawIntermedie.prime.matematica[2] + rawIntermedie.prime.inglese[2])/3,
+                (rawIntermedie.prime.italiano[3] + rawIntermedie.prime.matematica[3] + rawIntermedie.prime.inglese[3])/3,
+                (rawIntermedie.seconde.italiano[0] + rawIntermedie.seconde.matematica[0] + rawIntermedie.seconde.inglese[0])/3,
+                (rawIntermedie.seconde.italiano[1] + rawIntermedie.seconde.matematica[1] + rawIntermedie.seconde.inglese[1])/3,
+                (rawIntermedie.seconde.italiano[2] + rawIntermedie.seconde.matematica[2] + rawIntermedie.seconde.inglese[2])/3,
+                (rawIntermedie.seconde.italiano[3] + rawIntermedie.seconde.matematica[3] + rawIntermedie.seconde.inglese[3])/3
+            ];
+
+            // Calcolo Medie Generali Finali
+            const medieQ2 = [
+                (rawFinali.prime.italiano[0] + rawFinali.prime.matematica[0] + rawFinali.prime.inglese[0])/3,
+                (rawFinali.prime.italiano[1] + rawFinali.prime.matematica[1] + rawFinali.prime.inglese[1])/3,
+                (rawFinali.prime.italiano[2] + rawFinali.prime.matematica[2] + rawFinali.prime.inglese[2])/3,
+                (rawFinali.prime.italiano[3] + rawFinali.prime.matematica[3] + rawFinali.prime.inglese[3])/3,
+                (rawFinali.seconde.italiano[0] + rawFinali.seconde.matematica[0] + rawFinali.seconde.inglese[0])/3,
+                (rawFinali.seconde.italiano[1] + rawFinali.seconde.matematica[1] + rawFinali.seconde.inglese[1])/3,
+                (rawFinali.seconde.italiano[2] + rawFinali.seconde.matematica[2] + rawFinali.seconde.inglese[2])/3,
+                (rawFinali.seconde.italiano[3] + rawFinali.seconde.matematica[3] + rawFinali.seconde.inglese[3])/3
+            ];
+
+            // Generazione della Griglia Comparativa Dettagliata (Solo Prime e Seconde)
+            const tbodyComp = document.getElementById('tbody-griglia-comparativa');
+            tbodyComp.innerHTML = '';
+
+            const comparisonMapping = [
+                { name: 'I A', key: 'prime', idx: 0 },
+                { name: 'I B', key: 'prime', idx: 1 },
+                { name: 'I C', key: 'prime', idx: 2 },
+                { name: 'I D', key: 'prime', idx: 3 },
+                { name: 'II A', key: 'seconde', idx: 0 },
+                { name: 'II B', key: 'seconde', idx: 1 },
+                { name: 'II C', key: 'seconde', idx: 2 },
+                { name: 'II D', key: 'seconde', idx: 3 }
+            ];
+
+            comparisonMapping.forEach(c => {
+                const q1Ita = rawIntermedie[c.key].italiano[c.idx];
+                const q2Ita = rawFinali[c.key].italiano[c.idx];
+                const dIta = (q2Ita - q1Ita).toFixed(2);
+
+                const q1Mat = rawIntermedie[c.key].matematica[c.idx];
+                const q2Mat = rawFinali[c.key].matematica[c.idx];
+                const dMat = (q2Mat - q1Mat).toFixed(2);
+
+                const q1Ing = rawIntermedie[c.key].inglese[c.idx];
+                const q2Ing = rawFinali[c.key].inglese[c.idx];
+                const dIng = (q2Ing - q1Ing).toFixed(2);
+
+                const q1Avg = (q1Ita + q1Mat + q1Ing) / 3;
+                const q2Avg = (q2Ita + q2Mat + q2Ing) / 3;
+                const dAvg = (q2Avg - q1Avg).toFixed(2);
+
+                const renderDelta = (v) => {
+                    const val = parseFloat(v);
+                    if (val > 0) return `<span class="text-emerald-400 font-bold ml-1">(+${v}) <i class="fa-solid fa-caret-up text-[10px]"></i></span>`;
+                    if (val < 0) return `<span class="text-rose-400 font-bold ml-1">(${v}) <i class="fa-solid fa-caret-down text-[10px]"></i></span>`;
+                    return `<span class="text-slate-500 font-bold ml-1">(=)</span>`;
+                };
+
+                tbodyComp.innerHTML += `
+                    <tr class="hover:bg-white/5 transition-colors border-b border-white/5">
+                        <td class="p-3 font-bold text-white text-sm">${c.name}</td>
+                        <td class="p-3">${q1Ita.toFixed(1)} → ${q2Ita.toFixed(1)} ${renderDelta(dIta)}</td>
+                        <td class="p-3">${q1Mat.toFixed(1)} → ${q2Mat.toFixed(1)} ${renderDelta(dMat)}</td>
+                        <td class="p-3">${q1Ing.toFixed(1)} → ${q2Ing.toFixed(1)} ${renderDelta(dIng)}</td>
+                        <td class="p-3 text-center bg-white/5 font-bold text-amber-300">
+                            ${q1Avg.toFixed(2)} → ${q2Avg.toFixed(2)} ${renderDelta(dAvg)}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // 1. Grafico a colonne doppie: Confronto Medie Generali Classi
+            const ctxCompClassi = document.getElementById('canvas-comparativo-classi');
+            const compClassiChart = new Chart(ctxCompClassi, {
+                type: 'bar',
+                data: {
+                    labels: classLabels,
+                    datasets: [
+                        {
+                            label: '1° Quadrimestre (Intermedie)',
+                            data: medieQ1,
+                            backgroundColor: 'rgba(99, 102, 241, 0.75)',
+                            borderColor: '#6366f1',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        },
+                        {
+                            label: '2° Quadrimestre (Finali)',
+                            data: medieQ2,
+                            backgroundColor: 'rgba(244, 63, 94, 0.75)',
+                            borderColor: '#f43f5e',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 10, grid: { color: 'rgba(255, 255, 255, 0.08)' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 15, font: { weight: 'bold' } } },
+                        datalabels: {
+                            anchor: 'end', align: 'top', color: '#fff', font: { weight: 'bold', size: 10 },
+                            formatter: (val) => val.toFixed(2)
+                        }
+                    }
+                }
+            });
+            activeCharts.push({ canvasId: 'canvas-comparativo-classi', chart: compClassiChart });
+
+            // Raccogli tutti i voti dei due periodi
+            const votiQ1 = [
+                ...rawIntermedie.prime.italiano, ...rawIntermedie.prime.matematica, ...rawIntermedie.prime.inglese,
+                ...rawIntermedie.seconde.italiano, ...rawIntermedie.seconde.matematica, ...rawIntermedie.seconde.inglese
+            ];
+            const votiQ2 = [
+                ...rawFinali.prime.italiano, ...rawFinali.prime.matematica, ...rawFinali.prime.inglese,
+                ...rawFinali.seconde.italiano, ...rawFinali.seconde.matematica, ...rawFinali.seconde.inglese
+            ];
+
+            const getFasce = (votiArr) => {
+                let ecc = votiArr.filter(v => v >= 8).length;
+                let med = votiArr.filter(v => v >= 6 && v < 8).length;
+                let crit = votiArr.filter(v => v < 6).length;
+                return [ecc, med, crit];
+            };
+
+            const fasceQ1 = getFasce(votiQ1);
+            const fasceQ2 = getFasce(votiQ2);
+
+            const totQ1 = fasceQ1.reduce((a,b)=>a+b,0);
+            const totQ2 = fasceQ2.reduce((a,b)=>a+b,0);
+
+            // Popola tabelle di legenda semplici
+            const populateTable = (tbodyId, dataArr, total) => {
+                const tbody = document.getElementById(tbodyId);
+                const labels = ['Eccellenze (da 8 in su)', 'Fascia Media (6 - 7.9)', 'Criticità (sotto il 6)'];
+                const bgColors = ['bg-emerald-500', 'bg-blue-500', 'bg-rose-500'];
+                
+                tbody.innerHTML = '';
+                dataArr.forEach((val, index) => {
+                    const perc = ((val/total)*100).toFixed(1);
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="py-2 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full ${bgColors[index]}"></span>
+                                <span class="text-slate-300 font-medium">${labels[index]}</span>
+                            </td>
+                            <td class="py-2 text-center text-white font-bold">${val}</td>
+                            <td class="py-2 text-right text-amber-300 font-extrabold">${perc}%</td>
+                        </tr>
+                    `;
+                });
+            };
+
+            populateTable('tbody-q1-stats', fasceQ1, totQ1);
+            populateTable('tbody-q2-stats', fasceQ2, totQ2);
+
+            // Opzioni comuni per i grafici a torta
+            const pieOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: 'bold', size: 11 },
+                        formatter: (val, context) => {
+                            let sum = context.dataset.data.reduce((a,b)=>a+b,0);
+                            return ((val/sum)*100).toFixed(0) + '%';
+                        }
+                    }
+                }
+            };
+
+            // Torta Q1
+            const ctxTortaQ1 = document.getElementById('canvas-torta-fasce-q1');
+            const tortaQ1Chart = new Chart(ctxTortaQ1, {
+                type: 'pie',
+                data: {
+                    labels: ['Eccellenze', 'Fascia Media', 'Criticità'],
+                    datasets: [{
+                        data: fasceQ1,
+                        backgroundColor: ['#10b981', '#3b82f6', '#f43f5e'],
+                        borderWidth: 1
+                    }]
+                },
+                options: pieOptions
+            });
+            activeCharts.push({ canvasId: 'canvas-torta-fasce-q1', chart: tortaQ1Chart });
+
+            // Torta Q2
+            const ctxTortaQ2 = document.getElementById('canvas-torta-fasce-q2');
+            const tortaQ2Chart = new Chart(ctxTortaQ2, {
+                type: 'pie',
+                data: {
+                    labels: ['Eccellenze', 'Fascia Media', 'Criticità'],
+                    datasets: [{
+                        data: fasceQ2,
+                        backgroundColor: ['#10b981', '#3b82f6', '#f43f5e'],
+                        borderWidth: 1
+                    }]
+                },
+                options: pieOptions
+            });
+            activeCharts.push({ canvasId: 'canvas-torta-fasce-q2', chart: tortaQ2Chart });
+
+            // 3. Grafico a colonne doppie di confronto diretto per fasce (Sostituisce le linee confuse!)
+            const percentualiQ1 = fasceQ1.map(val => (val / totQ1 * 100).toFixed(1));
+            const percentualiQ2 = fasceQ2.map(val => (val / totQ2 * 100).toFixed(1));
+
+            const ctxCompFasceBarre = document.getElementById('canvas-comparativo-fasce-barre');
+            const compFasceBarreChart = new Chart(ctxCompFasceBarre, {
+                type: 'bar',
+                data: {
+                    labels: ['Eccellenze (≥ 8)', 'Fascia Media (6 - 7.9)', 'Criticità (< 6)'],
+                    datasets: [
+                        {
+                            label: '1° Quadrimestre (%)',
+                            data: percentualiQ1,
+                            backgroundColor: 'rgba(59, 130, 246, 0.85)', // Blu
+                            borderColor: '#3b82f6',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        },
+                        {
+                            label: '2° Quadrimestre (%)',
+                            data: percentualiQ2,
+                            backgroundColor: 'rgba(16, 185, 129, 0.85)', // Verde smeraldo
+                            borderColor: '#10b981',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 100, grid: { color: 'rgba(255, 255, 255, 0.08)' } }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            anchor: 'end', align: 'top', color: '#fff', font: { weight: 'bold' },
+                            formatter: (val) => val + '%'
+                        }
+                    }
+                }
+            });
+            activeCharts.push({ canvasId: 'canvas-comparativo-fasce-barre', chart: compFasceBarreChart });
+        }
+    </script>
+
+    <script>
         let currentPeriod = 'period-intermedio';
 
         function switchPeriod(periodId) {
@@ -780,30 +1141,34 @@
 
             const btnInt = document.getElementById('btn-period-intermedio');
             const btnFin = document.getElementById('btn-period-finale');
+            const btnComp = document.getElementById('btn-period-comparativo');
+
+            // Reset classi pulsanti
+            btnInt.className = "btn-glow-indigo px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
+            btnFin.className = "btn-glow-rose px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
+            btnComp.className = "btn-glow-amber px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
 
             if (periodId === 'period-intermedio') {
-                btnInt.className = "btn-glow-indigo px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
-                btnFin.className = "btn-glow-rose px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
-                openTab('prime-i'); // Apri prima scheda disponibile
-            } else {
-                btnInt.className = "btn-glow-indigo px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white/80 hover:text-white flex items-center justify-center gap-2 opacity-60";
-                btnFin.className = "btn-glow-rose px-6 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
-                openTabF('prime-f'); // Apri prima scheda disponibile
+                btnInt.className = "btn-glow-indigo px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
+                openTab('prime-i'); 
+            } else if (periodId === 'period-finale') {
+                btnFin.className = "btn-glow-rose px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
+                openTabF('prime-f'); 
+            } else if (periodId === 'period-comparativo') {
+                btnComp.className = "btn-glow-amber px-5 py-3 rounded-full font-bold text-sm tracking-wide text-white flex items-center justify-center gap-2";
+                renderComparativeTab();
             }
         }
 
         // Navigazione schede 1° Quadrimestre (Intermedio)
         function openTab(tabId) {
-            // Nascondi tutti i contenuti del periodo intermedio
             document.querySelectorAll('#period-intermedio .tab-content').forEach(tc => tc.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
 
-            // Gestione bottoni tab
             document.querySelectorAll('.tab-btn-i').forEach(btn => {
                 btn.className = "tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10";
             });
 
-            // Trova il bottone attivo
             const btns = document.querySelectorAll('.tab-btn-i');
             if (tabId === 'prime-i') {
                 btns[0].className = "tab-btn-i px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider bg-indigo-600/30 border border-indigo-400 text-white shadow-lg shadow-indigo-500/20";
@@ -836,7 +1201,6 @@
             }
         }
 
-        // Avvio automatico al caricamento della pagina
         window.onload = function() {
             switchPeriod('period-intermedio');
         };
